@@ -6,7 +6,7 @@
 # v0.0.1 26/03/2020 Dominik Miklaszewski                                   #
 ############################################################################
 
-# Hashicorp components versions to be used
+# Versions to be used
 
 NOMAD_VERSION=0.10.5
 CONSUL_VERSION=1.7.2
@@ -36,27 +36,27 @@ cd $DOWNLOAD_DIR
 
 # Download the binaries
 
-echo "fetching consul binary for Linux x64..."
+echo "fetch consul binary for Linux x64.."
 curl -sSL https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip -o consul.zip
 
-echo "fetching nomad binary for Linux x64..."
+echo "fetch nomad binary for Linux x64.."
 curl -sSL https://releases.hashicorp.com/nomad/${NOMAD_VERSION}/nomad_${NOMAD_VERSION}_linux_amd64.zip -o nomad.zip
 
-echo "fetching vault binary for linux x64..."
+echo "fetch vault binary for linux x64.."
 curl -sSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip -o vault.zip
 
-# Install the binaries and set up the systemd instances on the host - all agents are in server mode.
+# Install the binaries and set up the systemd instances on the host
 
 # Install and set up consul service
 echo "Installing consul..."
 unzip consul.zip
-sudo install consul /usr/bin/consul
+sudo install consul /usr/local/bin/consul
 sudo mkdir -p /etc/consul.d
 consul -autocomplete-install
-complete -C /usr/bin/consul consul
+complete -C /usr/local/bin/consul consul
 sudo useradd --system --home /etc/consul.d --shell /bin/false consul
 sudo mkdir -p /var/devops/consul
-sudo chown --recursive consul:consul /var/devops/consul
+sudo chown -R consul:consul /var/devops/consul
 
 echo "Installing systemd service..."
 sudo touch /etc/systemd/system/consul.service
@@ -72,8 +72,8 @@ ConditionFileNotEmpty=/etc/consul.d/consul.hcl
 Type=notify
 User=consul
 Group=consul
-ExecStart=/usr/bin/consul agent -config-dir=/etc/consul.d/
-ExecReload=/usr/bin/consul reload
+ExecStart=/usr/local/bin/consul agent -config-dir=/etc/consul.d/
+ExecReload=/usr/local/bin/consul reload
 KillMode=process
 Restart=on-failure
 LimitNOFILE=65536
@@ -92,7 +92,7 @@ sudo mkdir -p /etc/consul.d/certs
 sudo mkdir -p /etc/consul.d/policies
 sudo touch /etc/consul.d/agent.hcl
 sudo touch /etc/consul.d/consul.json
-sudo chown --recursive consul:consul /etc/consul.d
+sudo chown -R consul:consul /etc/consul.d
 sudo chmod 640 /etc/consul.d/agent.hcl
 sudo chmod 640 /etc/consul.d/consul.json
 
@@ -100,11 +100,11 @@ sudo chmod 640 /etc/consul.d/consul.json
 
 echo "Installing nomad..."
 unzip nomad.zip
-sudo install nomad /usr/bin/nomad
+sudo install nomad /usr/local/bin/nomad
 sudo mkdir -p /etc/nomad.d
 echo "Installing autocomplete..."
 nomad -autocomplete-install
-complete -C /usr/bin/nomad nomad
+complete -C /usr/local/bin/nomad nomad
 sudo mkdir -p /var/devops/nomad
 
 echo "Installing systemd service..."
@@ -118,7 +118,7 @@ After=network-online.target
 
 [Service]
 ExecReload=/bin/kill -HUP $MAINPID
-ExecStart=/usr/bin/nomad agent -config /etc/nomad.d
+ExecStart=/usr/local/bin/nomad agent -config /etc/nomad.d
 KillMode=process
 KillSignal=SIGINT
 LimitNOFILE=infinity
@@ -141,11 +141,11 @@ sudo touch /etc/nomad.d/server.hcl
 
 echo "Installing vault..."
 unzip vault.zip
-sudo install vault /usr/bin/vault
+sudo install vault /usr/local/bin/vault
 sudo mkdir -p /etc/vault.d
 echo "Installing autocomplete..."
 vault -autocomplete-install
-complete -C /usr/bin/vault vault
+complete -C /usr/local/bin/vault vault
 sudo setcap cap_ipc_lock=+ep /usr/bin/vault
 sudo useradd --system --home /etc/vault.d --shell /bin/false vault
 sudo touch /etc/systemd/system/vault.service
@@ -171,7 +171,7 @@ AmbientCapabilities=CAP_IPC_LOCK
 Capabilities=CAP_IPC_LOCK+ep
 CapabilityBoundingSet=CAP_SYSLOG CAP_IPC_LOCK
 NoNewPrivileges=yes
-ExecStart=/usr/bin/vault server -config=/etc/vault.d/vault.hcl
+ExecStart=/usr/local/bin/vault server -config=/etc/vault.d/vault.hcl
 ExecReload=/bin/kill --signal HUP $MAINPID
 KillMode=process
 KillSignal=SIGINT
@@ -196,4 +196,8 @@ sudo mkdir -p /etc/vault.d/certs
 sudo touch /etc/vault.d/vault.hcl
 chown -R vault:vault /etc/vault.d
 
-echo "Done..."
+echo $(consul version) |awk '{print $1, $2}'
+echo $(nomad version) |awk '{print $1, $2}'
+echo $(vault version) |awk '{print $1, $2}'
+echo "Already installed in /usr/local/bin.."
+echo "Done.."
