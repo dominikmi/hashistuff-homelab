@@ -19,7 +19,7 @@ DATA_DIR="/var/devops"
 
 if [ ! -d "$DATA_DIR" ]; then
 	sudo mkdir -p "$DATA_DIR"
-	echo "Hashicorp cluster folder  created: $DATA_DIR"
+	echo "cluster data folder created: $DATA_DIR"
 fi
 
 # Download directory
@@ -29,7 +29,7 @@ DOWNLOAD_DIR="/opt/cluster"
 
 if [ ! -d "$DOWNLOAD_DIR" ]; then
 	sudo mkdir -p "$DOWNLOAD_DIR"
-	echo "Hashicorp download folder created: $DOWNLOAD_DIR"
+	echo "download folder created: $DOWNLOAD_DIR"
 fi
 
 cd $DOWNLOAD_DIR
