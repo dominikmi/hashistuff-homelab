@@ -17,11 +17,12 @@ I appreciate all those on-line classes, but actually the best way is the DYI app
 
 ### Network diagram
 
-Here's a diagram of a simple LAN with NUC box being a firewall/router between the LAN and a virtual LAN set in libvirt. This is the environment where I am going to set up a lab grade Nomad+Consul+Vault cluster.
+Here's a diagram of a simple LAN with a NUC box being a firewall/router between the LAN and a virtual LAN set in libvirt. This is the environment where I am going to set up a lab grade Nomad+Consul+Vault cluster.
+The HW is just an old Intel NUC box with Intel N3700 4cores, 8GB RAM and 256 SSD. It's enough for a lab, way below minimum if you think of any serious use of it. :) The KVM (libvirt) virtual machines are stripped down 1.5GB, 1core Ubuntu 16.04 images. Had them ready at hand. 
 
 ![LAN diagram](pictures/Diagram-LAN.png)
 
-The below is a diagram which shows how I am going to set up the cluster (or actually the three clusters of: nomad, consul and vault).
+The below is a diagram which shows how I am going to set up the cluster (or actually the three clusters of: nomad, consul and vault). All key components are installed as systemd services. Of course, as a prerequisite for any successful orchestration cluster, I need also configured and running Docker. 
 
 ![Cluster in LAN](pictures/Diagram-cluster-LAN.png).
 
