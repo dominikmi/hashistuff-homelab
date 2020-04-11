@@ -241,10 +241,10 @@ error nuke-server.pem: verification failed
 
 #### 11. Re-run verification
 
-``
+```
 $ openssl verify nuke-peer.pem 
 nuke-server.pem: OK
-``
+```
 
 #### 12. Do the same (steps 7-9, the 9th step will work) for both nomad client nodes - generate and verify the cert:
 
@@ -309,3 +309,7 @@ Updating certificates in /etc/ssl/certs...
 Running hooks in /etc/ca-certificates/update.d...
 done.
 ```
+
+We are now set, to utilize host (server, peer, client) certificates required for any TLS secured operations in Nomad, Consul and Vault.
+The signing intermediate CA along with the host cert and host key should be placed (and eventually chown-ed to right user) in the /etc/nomad.d/certs , /etc/consul.d/certs and /etc/vault.d/certs .
+Remember that Vault requires also a fullchained host certificate (from top-down: host, intermediate, root). 
