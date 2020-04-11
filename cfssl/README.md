@@ -9,17 +9,18 @@ You can install and perform the whole procesure anywhere, but at the end you wil
 * `$ sudo cp ~/go/bin/cfssljson /usr/local/bin/cfssljson`
 
 ### 2. Check installed wersion 
-```
+``
 $ cfssl version
 Version: dev
 Runtime: go1.13.6
+``
 
 ### 3. Create configs for ca & intermediate certs
 
 The root of all certificates is a certificate authority - the CA. It signs all other certificates. Usually, a Root CA cert is used to create intermediate CAs. These intermediates ones are used to sign certificates for clients, servers and peers (hosts that can offer both client and a server TLS secured services). The intermediate certificates provide additional layer of security, as the CAs are not needed to be used to issue host/client/peer certificates and it's always safer to store them at some trusted and secure place.
 
 #### 2.1 Create a __ca.json__ config for CA CSR, 
-```
+``
 {
   "CN": "Nukelab CA",
   "key": {
@@ -36,12 +37,13 @@ The root of all certificates is a certificate authority - the CA. It signs all o
   }
  ]
 }
+``
 
 #### 2.2 Create profile config with intermediate ca, server, client, peer profiles - (__fssl.json__)
 
 These profiles will be used to create appropriate certificates.
 
-```
+``
 {
   "signing": {
     "default": {
@@ -96,9 +98,10 @@ These profiles will be used to create appropriate certificates.
     }
   }
 }
+``
 
 #### 2.3 Create Intermediate cert config file intermediate-ca.json
-```
+``
 {
   "CN": "Nukelab Intermediate CA",
   "key": {
@@ -118,31 +121,45 @@ These profiles will be used to create appropriate certificates.
     "expiry": "42720h"
   }
 }
+``
 
 ### 3. Put the __\*.json__ files into the "config" folder.
 
-### 4. Generate the CA certificate: `cfssl gencert -initca config/ca.json | cfssljson -bare ca`
+### 4. Generate the CA certificate
+
+Command:  `$ cfssl gencert -initca config/ca.json | cfssljson -bare ca`
+
 You get three files:
 	* ca.csr - signing request,
 	* ca.pem - certificate,
 	* ca-key.pem - private key to the certificate.
 
-### 5. Create Intermediate CA: `cfssl gencert -initca intermediate-ca.json | cfssljson -bare intermediate_ca`
+### 5. Create Intermediate CA
+
+Command: `$ cfssl gencert -initca intermediate-ca.json | cfssljson -bare intermediate_ca`
+
 You get another three files:
 	* intermediate_ca.csr
 	* intermediate_ca.pem
 	* intermediate_ca-key.pem
-### 6. Sign the Intermediate CA with the CA cert and the CA private key, to authorize it, specifying intermediate_ca profile from the cfssl.json: `cfssl sign -ca ca.pem -ca-key ca-key.pem -config cfssl.json -profile intermediate_ca intermediate_ca.csr | cfssljson -bare intermediate_ca`
-```
-2020/04/07 21:32:21 [INFO] signed certificate with serial number 128342806306350742550817444069814883502879308978
+
+Sign the Intermediate CA with the CA cert and the CA private key, to authorize it, specifying intermediate_ca profile from the cfssl.json: 
+
+`$ cfssl sign -ca ca.pem -ca-key ca-key.pem -config cfssl.json -profile intermediate_ca intermediate_ca.csr | cfssljson -bare intermediate_ca`
+
+Output:
+``2020/04/07 21:32:21 [INFO] signed certificate with serial number 128342806306350742550817444069814883502879308978
+``
 
 ### 7. Now, we need to specify the config for our host/peer certificate. 
 
 Our NUC host has two interfaces: 
+
 * wlan - 192.168.120.150 (facing LAN)
 * libvirt - 192.168.100.1 (facing virtual stuff)
 
 The host has also DNS names configured:
+
 * nuke.nukelab.local resolves to 192.168.120.150
 * nukeint.nukelab.local resolves to 192.168.100.1
 * localhost of course, resolves back to 127.0.0.1 (required if you do some nomad operations from within the host),
@@ -154,7 +171,8 @@ There's one more thing - Nomad and Consul themselves create those fancy "dns" na
 Plus, vault requires fully chained host pem file (host, intermediate, ca - in that order!) + the key.
 
 Here's the config for the NUC host:
-```
+
+``
 {
   "CN": "nuke.nukelab.local",
   "key": {
@@ -185,16 +203,18 @@ Here's the config for the NUC host:
     "server.nukelab.consul"
   ]
 }
+``
 
 ### 8. Generate the host cert for nuke.nukelab.local - with profile "peer" because the nomad agent reports back to itself as local client as well:
 
-```
+``
 $ cfssl gencert -ca intermediate_ca.pem -ca-key intermediate_ca-key.pem -config config/cfssl.json -profile=peer config/nuke.json | cfssljson -bare nuke-peer
 2020/04/07 22:08:27 [INFO] generate received request
 2020/04/07 22:08:27 [INFO] received CSR
 2020/04/07 22:08:27 [INFO] generating key: rsa-2048
 2020/04/07 22:08:27 [INFO] encoded CSR
 2020/04/07 22:08:27 [INFO] signed certificate with serial number 558685408516880036014304522581786694302670973084
+``
 
 We should have another three files now:
 
@@ -202,30 +222,33 @@ We should have another three files now:
 	* nuke-peer.pem
 	* nuke-peer-key.pem
 
-### 9. Let's verify the cert and its key:
-```
+### 9. Let's verify the cert and its key
+``
 $ openssl verify nuke-server.pem
 C = PL, ST = Maz, L = Warsaw, O = Nukelab, OU = Nukelab Hosts, CN = nuke.nukelab.local
 error 20 at 0 depth lookup: unable to get local issuer certificate
 error nuke-server.pem: verification failed
+``
 
-### 10. Add CA and intermediate CA to the host trusted store (on the NUC host):
+### 10. Add CA and intermediate CA to the host trusted store (on the NUC host)
 
 	* `sudo cp -rp ca.pem /etc/pki/ca-trust/source/anchors/ca.pem`
 	* `sudo cp -rp intermediate_ca.pem /etc/pki/ca-trust/source/anchors/intermediate_ca.pem`
 	* `sudo update-ca-trust extract`
 
-### 11. Re-run verification:
-```
+### 11. Re-run verification
+
+``
 $ openssl verify nuke-peer.pem 
 nuke-server.pem: OK
+``
 
 ### 12. Do the same (steps 7-9, the 9th step will work) for both nomad client nodes - generate and verify the cert:
 
 	* worker01.nukelab.local
 	* worker02.nukelab.local
 
-```
+``
 $ cfssl gencert -ca intermediate_ca.pem -ca-key intermediate_ca-key.pem -config config/cfssl.json -profile=client config/worker01.json | cfssljson -bare worker01-client
 2020/04/07 22:22:17 [INFO] generate received request
 2020/04/07 22:22:17 [INFO] received CSR
@@ -238,9 +261,10 @@ $ cfssl gencert -ca intermediate_ca.pem -ca-key intermediate_ca-key.pem -config 
 2020/04/07 22:22:27 [INFO] generating key: rsa-2048
 2020/04/07 22:22:27 [INFO] encoded CSR
 2020/04/07 22:22:27 [INFO] signed certificate with serial number 658624310197958763086567018155196969147016639420
+``
 
 The workers config file looks like this (for the .101):
-```
+``
 {  
   "CN": "worker01.nukelab.local",
   "key": {
@@ -265,11 +289,13 @@ The workers config file looks like this (for the .101):
     "client.nukelab.consul"
   ]
 }
+``
 
 The config file work the second worker will look almost the same - you just need to replace worker01 with worker02 and change the IP last octet to 102.
 
 ### 13. On Ubuntu 16.04 (both workers), add the ca and intermediate ca to the trusted ca store with the following commands:
-```
+
+``
 root@worker01:~# cp ca.pem /usr/local/share/ca-certificates/ca.crt
 root@worker01:~# cp intermediate_ca.pem /usr/local/share/ca-certificates/intermediate_ca.crt
 root@worker01:~# update-ca-certificates 
@@ -277,4 +303,4 @@ Updating certificates in /etc/ssl/certs...
 2 added, 0 removed; done.
 Running hooks in /etc/ca-certificates/update.d...
 done.
-
+``
