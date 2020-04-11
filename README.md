@@ -24,7 +24,7 @@ The HW is just an old Intel NUC box with Intel N3700 4cores, 8GB RAM and 256 SSD
 
 ![LAN diagram](pictures/Diagram-LAN.png)
 
-The below is a diagram which shows how I am going to set up the cluster (or actually the three clusters of: nomad, consul and vault). All key components are installed as systemd services. Of course, as a prerequisite for any successful orchestration cluster, I need also configured and running Docker. 
+The below is a diagram which shows how I am going to set up the cluster (or actually the three clusters of: nomad, consul and vault). All key components are installed as systemd services. Of course, as a prerequisite for any successful orchestration cluster, I need also configured and running Docker. As you can see the clustering setup is quite simple: 1 server + 2 workers. Unfortunately, this setup will not let me try some HA scenarios, I'd need another NUC.
 
 ![Cluster in LAN](pictures/Diagram-cluster-LAN.png).
 
