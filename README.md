@@ -6,7 +6,7 @@ I appreciate all those on-line classes, but actually the best way is the DYI app
 * How to setup secure [Consul cluster](consul/README.md), 
 * How to setup [Vault](vault/README.md) with secure consul backend,
 * How to setup [transit auto-unseal](vault/transit.md) vault,
-* HOW to setup my own [Root CA, intermediate CA and certs](cfssl/README.md) for clusters services, communication and web.
+* How to setup my own [Root CA, intermediate CA and certs](cfssl/README.md) for clusters services, communication and web.
 
 ### Prerequisites
 
