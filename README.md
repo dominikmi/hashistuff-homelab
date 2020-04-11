@@ -1,5 +1,6 @@
 ## hashistuff
-Various works with Hashicorp nomad, consul and vault.
+This is a repository with Various works and studies on Hashicorp nomad, consul and vault.
+I appreciate all those on-line classes, but actually the best way is the DYI approach.
 
 * How to setup secure Nomad cluster,
 * How to setup secure Consul cluster, 
@@ -15,7 +16,7 @@ Various works with Hashicorp nomad, consul and vault.
 
 ### Network diagram
 
-Here's a diagram of a simple LAN with NUC box being a firewall/router between the LAN and a virtual LAN set in libvirt.
+Here's a diagram of a simple LAN with NUC box being a firewall/router between the LAN and a virtual LAN set in libvirt. This is the environment where I am going to set up a lab grade Nomad+Consul+Vault cluster.
 
 ![Lan diagram](pictures/Diagram-LAN.png)
 
