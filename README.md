@@ -12,3 +12,10 @@ Various works with Hashicorp nomad, consul and vault.
 * WiFi or any other LAN,
 * Libvirtd active and configured as NAT, with static IPs and dnsmasq turned off on CentOS 8,
 * BIND 9 installed and configured for hosts in both nets: public LAN and Libvirtd
+
+### Network diagram
+
+Here's a diagram of a simple LAN with NUC box being a firewall/router between the LAN and a virtual LAN set in libvirt.
+
+![Lan diagram](pictures/Diagram-LAN.png)
+
