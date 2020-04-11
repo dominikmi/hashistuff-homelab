@@ -15,6 +15,8 @@ I appreciate all those on-line classes, but actually the best way is the DYI app
 * Libvirtd active and configured as NAT, with static IPs and dnsmasq turned off on CentOS 8,
 * BIND 9 installed and configured for hosts in both nets: public LAN and Libvirtd (can be installed on the CentOS 8 box or anywhere else in the LAN).
 
+__Note:__ By default, there's Podman installed in CentOS 8 as the containers runtime. No worries, the Nomad server does not use it. The Nomad clients have docker.io package installed.
+
 ### Network diagram
 
 Here's a diagram of a simple LAN with a NUC box being a firewall/router between the LAN and a virtual LAN set in libvirt. This is the environment where I am going to set up a lab grade Nomad+Consul+Vault cluster.
