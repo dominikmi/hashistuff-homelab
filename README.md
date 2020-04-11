@@ -22,6 +22,7 @@ Here's a diagram of a simple LAN with NUC box being a firewall/router between th
 ![LAN diagram](pictures/Diagram-LAN.png)
 
 The below is a diagram which shows how I am going to set up the cluster (or actually the three clusters of: nomad, consul and vault).
+
 ![Cluster in LAN](pictures/Diagram-cluster-LAN.png).
 
 ### Bibliography
