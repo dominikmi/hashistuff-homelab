@@ -20,7 +20,7 @@ Runtime: go1.13.6
 The root of all certificates is a certificate authority - the CA. It signs all other certificates. Usually, a Root CA cert is used to create intermediate CAs. These intermediates ones are used to sign certificates for clients, servers and peers (hosts that can offer both client and a server TLS secured services). The intermediate certificates provide additional layer of security, as the CAs are not needed to be used to issue host/client/peer certificates and it's always safer to store them at some trusted and secure place.
 
 #### 2.1 Create a __ca.json__ config for CA CSR, 
-``
+```
 {
   "CN": "Nukelab CA",
   "key": {
@@ -37,13 +37,13 @@ The root of all certificates is a certificate authority - the CA. It signs all o
   }
  ]
 }
-``
+```
 
 #### 2.2 Create profile config with intermediate ca, server, client, peer profiles - (__fssl.json__)
 
 These profiles will be used to create appropriate certificates.
 
-``
+```
 {
   "signing": {
     "default": {
@@ -98,7 +98,7 @@ These profiles will be used to create appropriate certificates.
     }
   }
 }
-``
+```
 
 #### 2.3 Create Intermediate cert config file intermediate-ca.json
 ``
