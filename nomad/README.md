@@ -89,7 +89,7 @@ c138ca0b  dc1  nuke.nukelab.local  <none>  false  eligible     ready
 ```
 
 ### TLS for Nomad
---
+---
 
 #### 1. Follow the procedure desribed [here](cfssl/README.md)
 
@@ -180,7 +180,7 @@ $ nomad job run -check-index 11648 haproxy.nomad
 ```
 
 ### Set Nomad ACL
---
+---
 
 #### 1. Initialize ACL on the Nomad server 
 
@@ -205,6 +205,7 @@ Policies     = n/a
 Create Time  = 2020-04-02 09:21:10.060712687 +0000 UTC
 Create Index = 11969
 Modify Index = 11969
+```
 
 #### 3. Set the nomad management token
 
@@ -240,10 +241,10 @@ $ nomad status
 ID           Type     Priority  Status   Submit Date
 demo-webapp  service  50        running  2020-04-01T22:38:34+02:00
 haproxy      service  50        running  2020-04-02T11:13:42+02:00
+```
 
 #### 6. Enable ACLs on nomad clients - same acl stanza in the client.hcl
-
-8. Examine present token (the one we created by `nomad acl bootstrap`)
+Examine present token (the one we created by `nomad acl bootstrap`)
 
 ```
 $ nomad acl token self
