@@ -89,7 +89,7 @@ c138ca0b  dc1  nuke.nukelab.local  <none>  false  eligible     ready
 ```
 
 ### TLS for Nomad
----
+--
 
 #### 1. Follow the procedure desribed [here](cfssl/README.md)
 
@@ -177,4 +177,83 @@ $ nomad job run -check-index 11648 haproxy.nomad
     Allocation "20e35554" created: node "2c14abe9", group "haproxy"
     Evaluation status changed: "pending" -> "complete"
 ==> Evaluation "7839c50d" finished with status "complete"
+```
+
+### Set Nomad ACL
+--
+
+#### 1. Initialize ACL on the Nomad server 
+
+Modify the `/etc/nomad.d/server.hcl` with the following:
+
+```
+acl {
+  enabled = true
+}
+```
+
+#### 2. Bootstrap the ACL on the Nomad server
+
+```
+$ nomad acl bootstrap
+Accessor ID  = d2f16593-45be-ed57-bd65-d161f1a6763f
+Secret ID    = 4de05b7a-0fc6-790d-9665-be1ddca0f4fe
+Name         = Bootstrap Token
+Type         = management
+Global       = true
+Policies     = n/a
+Create Time  = 2020-04-02 09:21:10.060712687 +0000 UTC
+Create Index = 11969
+Modify Index = 11969
+
+#### 3. Set the nomad management token
+
+The `Secret ID` entry is the initial `NOMAD_TOKEN` that one needs to present to Nomad (via CLI, CURL or place in the WebUI) to be able to perform operations on the server.
+
+```
+$ export NOMAD_TOKEN=4de05b7a-0fc6-790d-9665-be1ddca0f4fe
+```
+
+..and test the token:
+
+```
+$ nomad status
+ID           Type     Priority  Status   Submit Date
+demo-webapp  service  50        running  2020-04-01T22:38:34+02:00
+haproxy      service  50        running  2020-04-02T11:13:42+02:00
+```
+
+#### 4. Apply interin anonymous policy allowing ALL:ALL
+
+Before we set default access policy to "_deny_" so that only white-listed entities are able to perform specific operations on the Nomad server, we can set an interim policy to be able to set everything seamlessly on all servers and clients first. The anonymous policy is [here](policies/anonymous.policy).
+
+```
+$ nomad acl policy apply -description "Anonymous policy (full-access)" anonymous anonymous.policy
+Successfully wrote "anonymous" ACL policy!
+```
+
+#### 5. Unset & Test the interim policy
+```
+$ unset NOMAD_TOKEN
+$ echo ${NOMAD_TOKEN}
+$ nomad status
+ID           Type     Priority  Status   Submit Date
+demo-webapp  service  50        running  2020-04-01T22:38:34+02:00
+haproxy      service  50        running  2020-04-02T11:13:42+02:00
+
+#### 6. Enable ACLs on nomad clients - same acl stanza in the client.hcl
+
+8. Examine present token (the one we created by `nomad acl bootstrap`)
+
+```
+$ nomad acl token self
+Accessor ID  = d2f16593-45be-ed57-bd65-d161f1a6763f
+Secret ID    = 4de05b7a-0fc6-790d-9665-be1ddca0f4fe
+Name         = Bootstrap Token
+Type         = management
+Global       = true
+Policies     = n/a
+Create Time  = 2020-04-02 09:21:10.060712687 +0000 UTC
+Create Index = 11969
+Modify Index = 11969
 ```
