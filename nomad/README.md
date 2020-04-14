@@ -2,9 +2,11 @@
 ### Basic setup
 ---
 
+If you installed nomad either with [this script](../bin/install_cluster.sh) or manually on your server and the client hosts, you can start bringing up the Nomad part of the whole cluster.
+
 #### 0. Create service and rules for the firewalld.
 
-The whole nomad cluster communication will take place in the libvirt zone (in the 192.168.100.0/24 network), therefore firewalld should contain defined and allowed all nomad services with default ports: tcp: 4646,4647,4648 (or any other should you decide to change the defaults).
+The whole nomad cluster communication will take place in the libvirt zone (in the 192.168.100.0/24 network), therefore firewalld should contain defined and allowed all nomad services with default ports: tcp: 4646,4647,4648 (or any other should you decide to change the defaults). As you can see below, there is a `consul` integration stanza in the config. It is not going to work now, but no worries, it's not going to prevent the nomad cluster from working. 
 
 #### 1. Server config:
 
@@ -258,3 +260,5 @@ Create Time  = 2020-04-02 09:21:10.060712687 +0000 UTC
 Create Index = 11969
 Modify Index = 11969
 ```
+
+Now, we can jump over to the section on consul [setup](../consul/README.md)
