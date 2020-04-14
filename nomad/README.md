@@ -91,7 +91,7 @@ c138ca0b  dc1  nuke.nukelab.local  <none>  false  eligible     ready
 ### TLS for Nomad
 ---
 
-#### 1. Follow the procedure desribed [here](cfssl/README.md)
+#### 1. Follow the procedure described [here](cfssl/README.md)
 
 #### 2. Modify config nomad server
 
