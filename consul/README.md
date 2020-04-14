@@ -22,7 +22,7 @@ uFO39ExWFLHFf/TwnOPdkhROaowqnfyKyaMht/BC/A8=
 Now we can create a config file for the server in *.json* format.
 
 (/etc/consul.d/consul.json)
-~~~
+```
 {
     # min. number of the server to initialize the consul cluster
     "bootstrap_expect": 1,
