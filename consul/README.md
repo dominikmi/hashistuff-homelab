@@ -119,9 +119,8 @@ worker01            192.168.100.101:8301  alive   client  1.7.2  2         nukel
 worker02            192.168.100.102:8301  alive   client  1.7.2  2         nukelab  <default>
 ```
 
----
 Now, we can go to the [vault setup](../vault/README.md) and get the basic vault cluster running. Once we get that done, we will come back and follow up remaining steps on TLS and ACL for consul.
----
+
 
 ### Setting up TLS for consul
 ---
@@ -157,7 +156,6 @@ Add the below piece of config to the _consul.json_ file
 ```
 $ sudo systemctl restart consul
 $ sudo systemctl status consul
-```
 [..]
 Apr 08 10:35:11 nuke.nukelab.local bash[25454]:     2020-04-08T10:35:11.308+0200 [INFO]  agent: Synced node info
 Apr 08 10:35:11 nuke.nukelab.local consul[25454]:  agent: Synced node info
