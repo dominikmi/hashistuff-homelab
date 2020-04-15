@@ -94,7 +94,7 @@ token_type     service
 orphan         false
 ```
 
-The `client_token` is the encryption token that we have to use in all vault cluster nodes configuration. Let's get [there](README.md)
+The `client_token` is the encryption token that we have to use in all vault cluster nodes configuration. Let's get [there](https://github.com/dominikmi/hashistuff/blob/master/vault/README.md#5-set-tls-and-transit-auto-unseal-for-vault)
 
 
                    

@@ -94,3 +94,5 @@ Now, we can go back to [consul setup](../consul/README.md) to set up TLS and ACL
 
 #### 5. Set TLS and transit auto-unseal for vault
 
+First, follow the steps descirbed in the [there](ReADME-transit.md) to set up a Master Transit Vault instance. Then come back and continue here.
+
