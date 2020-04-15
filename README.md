@@ -28,6 +28,11 @@ The below is a diagram which shows how I am going to set up the cluster (or actu
 
 ![Cluster in LAN](pictures/Diagram-cluster-LAN.png).
 
+
+### Secrets in this tutorial
+
+All secrets mentioned in this tutorial come from a home lab setup. They are solely presented for the sake of this tutorial.  Normally, I would store them aside securely and never disclose to the Internet audience. At a firm, you should follow some security rules or advisory, should you have any serious ITSec folks on board. Use your local PKI or any other sec tech stuff to secure your Root CA, root access tokens and encryption tokens.
+
 ### Bibliography
 
  * [CloudFlare: cfssl & cfssljson](https://github.com/cloudflare/cfssl),
