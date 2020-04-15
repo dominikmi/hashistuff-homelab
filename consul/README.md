@@ -329,8 +329,6 @@ By default, Consul assigns a global-management policy with unrestricted priviled
 * worker01-client is the consul client
 * worker02-client is the consul client as well.
 
-```
-
 consul-server-policy.hcl file:
 ```
 node "nuke-server" {
