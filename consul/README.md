@@ -447,6 +447,7 @@ URL: GET https://192.168.100.1:8200/v1/sys/seal-status
 Code: 500. Errors:
 
 * Unexpected response code: 403
+```
 
 #### 8. Token for the Vault cluster
 
