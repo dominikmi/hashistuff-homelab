@@ -90,3 +90,4 @@ Set the VAULT_ADDR variable to the local vault API address as set in the config 
 Use `vault operator unseal` and supply one of the five unseal keys, you gotta supply three of them, repeatedly.
 Repeat the procedure on each node.
 
+Now, we can go back to [consul setup](../consul/README.md) to set up TLS and ACL. When that is accomplished, we will come back to vault LTS, and follow the remaining steps of this document.
