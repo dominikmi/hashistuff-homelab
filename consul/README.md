@@ -433,6 +433,7 @@ i.e. for server:
   tokens = {
     agent = "2ca570cd-a15e-2548-d974-d144561243a9"
   }
+```
 .. and so on for the client agents.
 
 Now, remember, that vault which uses consul as backend is still broken.. try it:
@@ -494,4 +495,20 @@ $ consul kv export vault/
 		"value": "AAAAAQLQz9CfS4roOL2Y
 [..]
 
-We are set.
+We are set. The ultimate consul agent ACL config file `/etc/consul.d/agent.hcl` looks like this:
+
+```
+acl = {
+  enabled = true
+  default_policy = "deny"
+  enable_token_persistence = true
+  tokens = {
+    # token for nuke-server policy
+    agent = "2ca570cd-a15e-2548-d974-d144561243a9"
+    # token for global mgmt policy
+    agent = "4ce82d60-a6d3-49f1-c9d1-75396ed74e43"
+  }
+}
+```
+
+The ACL for the client node agents differ only with the first agent token (the client access policy token).
