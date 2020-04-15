@@ -1,11 +1,24 @@
 ## hashistuff
-This is a repository with Various works and studies on Hashicorp nomad, consul and vault.
-I appreciate all those on-line classes, but actually the best way is the DYI approach. 
+This is a repository with Various works and studies on Hashicorp nomad, consul and vault. I appreciate all those on-line classes, and (sometimes not quite intuitive) documentation, but actually the best way is the DYI approach. Setting up a secure Nomad cluster supported by consul and vault featuring transit autounseal is rather a complex task. Hence, I divided this complex task into the list of steps in the following order:
+
+1. Generate all neccessary TLS certificates (root, intermediate, host ones),
+2. Setup basic Nomad cluster,
+3. Setup basic Consul cluster,
+4. Setup TLS and ACL (blacklisting) for Nomad,
+5. Setup TLS for Consul,
+6. Setup Vault cluster and TLS,
+7. Setup Master Transit Vault instance with TLS,
+8. Enable transit auto-unseal on the Vault cluster,
+9. Setup ACL for Consul,
+
+Done. This task took me overall some 30 hours reading documentation, Hashicorp issues, logs, troubleshooting etc. It was fun. :) If I had a more powerful platform (with more RAM and cores) I'd certainly configure a setup more closely reflecting production environment - like 3 cluster server agents (Nomad and Consul). So, if you have more horsepower under the hood, the setup presented in this tutorial can be creatively expanded without any major problem.
+
+From this tutorial you can learn the following aspects of hashicorp stuff: 
 
 * How to setup secure [Nomad cluster](nomad/README.md),
 * How to setup secure [Consul cluster](consul/README.md), 
 * How to setup [Vault](vault/README.md) with secure consul backend,
-* How to setup [transit auto-unseal](vault/transit.md) vault,
+* How to setup [transit auto-unseal](vault/README-transit.md) vault,
 * How to setup my own [Root CA, intermediate CA and certs](cfssl/README.md) for clusters services, communication and web.
 
 ### Prerequisites
