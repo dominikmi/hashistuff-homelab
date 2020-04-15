@@ -494,6 +494,7 @@ $ consul kv export vault/
 		"flags": 0,
 		"value": "AAAAAQLQz9CfS4roOL2Y
 [..]
+```
 
 We are set. The ultimate consul agent ACL config file `/etc/consul.d/agent.hcl` looks like this:
 
