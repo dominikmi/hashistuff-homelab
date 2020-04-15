@@ -164,6 +164,7 @@ HA Enabled      false
 
 (next, go to open ssh sessions to vault nodes and  check vault cluster agents (nuke, worker01, worker02):
 
+```
 $ export VAULT_ADDR=https://192.168.100.1:8200
 $ vault status
 Key                      Value
