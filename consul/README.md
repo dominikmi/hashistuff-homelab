@@ -104,7 +104,7 @@ TimeoutStartSec=0
 WantedBy=default.target
 ```
 
-Now, 
+Start and check consul cluster setup:
 ```
 $ sudo systemctl daemon-reload
 $ sudo systemctl start consul
@@ -119,3 +119,148 @@ worker01            192.168.100.101:8301  alive   client  1.7.2  2         nukel
 worker02            192.168.100.102:8301  alive   client  1.7.2  2         nukelab  <default>
 ```
 
+---
+Now, we can go to the [vault setup](../vault/README.md) and get the basic vault cluster running. Once we get that done, we will come back and follow up remaining steps on TLS and ACL for consul.
+---
+
+### Setting up TLS for consul
+---
+
+#### 1. extend the *consul.json* config on the server by the following entries:
+(Note: we use the same certificates we have created for Nomad),
+```
+  "verify_incoming": true,
+   "verify_outgoing": true,
+   "verify_server_hostname": true,
+   "ca_file": "/etc/consul.d/certs/intermediate_ca.pem",
+   "cert_file": "/etc/consul.d/certs/nuke-peer.pem",
+   "key_file": "/etc/consul.d/certs/nuke-peer-key.pem",
+   "auto_encrypt": {
+   "allow_tls": true
+```
+
+#### 2. Configure the consul clients
+
+Add the below piece of config to the _consul.json_ file
+```
+  "verify_incoming": false,
+  "verify_outgoing": true,
+  "verify_server_hostname": true,
+  "ca_file": "intermediate_ca.pem",
+  "auto_encrypt": {
+    "tls": true
+  }
+```
+
+#### 3. Restart consul server and the clients
+
+```
+$ sudo systemctl restart consul
+$ sudo systemctl status consul
+```
+[..]
+Apr 08 10:35:11 nuke.nukelab.local bash[25454]:     2020-04-08T10:35:11.308+0200 [INFO]  agent: Synced node info
+Apr 08 10:35:11 nuke.nukelab.local consul[25454]:  agent: Synced node info
+Apr 08 10:35:18 nuke.nukelab.local bash[25454]:     2020-04-08T10:35:18.733+0200 [INFO]  agent.server.serf.lan: serf: EventMemberJoin: worker01 192.168.100.101
+Apr 08 10:35:18 nuke.nukelab.local bash[25454]:     2020-04-08T10:35:18.733+0200 [INFO]  agent.server: member joined, marking health alive: member=worker01
+Apr 08 10:35:18 nuke.nukelab.local consul[25454]:  agent.server.serf.lan: serf: EventMemberJoin: worker01 192.168.100.101
+Apr 08 10:35:18 nuke.nukelab.local consul[25454]:  agent.server: member joined, marking health alive: member=worker01
+Apr 08 10:35:35 nuke.nukelab.local bash[25454]:     2020-04-08T10:35:35.593+0200 [INFO]  agent.server.serf.lan: serf: EventMemberJoin: worker02 192.168.100.102
+Apr 08 10:35:35 nuke.nukelab.local bash[25454]:     2020-04-08T10:35:35.594+0200 [INFO]  agent.server: member joined, marking health alive: member=worker02
+Apr 08 10:35:35 nuke.nukelab.local consul[25454]:  agent.server.serf.lan: serf: EventMemberJoin: worker02 192.168.100.102
+Apr 08 10:35:35 nuke.nukelab.local consul[25454]:  agent.server: member joined, marking health alive: member=worker02
+```
+
+#### 4. You can define HTTPS access only
+
+By adding this piece to the /etc/consul.d/consul.json:
+```
+[..]
+"ports": {
+        "http": -1,    # turn off http
+        "https": 8500  # leave the https on 8500
+    },
+ [..]
+```
+
+Please note, that now your browser has to have a client certificate to present to consul server set for mutual authentication.
+Use this [tutorial](install-certs.md) to create another client cert and add it to your browser.
+
+#### 5. Final configs
+
+Ultimately, your consul server _consul.json_ file should look like this:
+```
+{
+    "bootstrap_expect": 1,
+    "client_addr": "0.0.0.0",
+    "datacenter": "nukelab",
+    "data_dir": "/var/devops/consul",
+    "domain": "consul",
+    "enable_script_checks": true,
+    "dns_config": {
+        "enable_truncate": true,
+        "only_passing": true
+    },
+    "ports": {
+        "http": 8500,
+        "https": 8501
+    },
+    "enable_syslog": true,
+    "encrypt": "uFO39ExWFLHFf/TwnOPdkhROaowqnfyKyaMht/BC/A8=",
+    "leave_on_terminate": true,
+    "log_level": "INFO",
+    "rejoin_after_leave": true,
+    "server": true,
+    "start_join": [
+        "192.168.100.1"
+    ],
+    "ui": true,
+    "verify_incoming": true,
+    "verify_outgoing": true,
+    "verify_server_hostname": true,
+    "ca_file": "/etc/consul.d/certs/intermediate_ca.pem",
+    "cert_file": "/etc/consul.d/certs/nuke-peer.pem",
+    "key_file": "/etc/consul.d/certs/nuke-peer-key.pem",
+    "auto_encrypt": {
+    "allow_tls": true
+  }
+
+}
+```
+
+And the client configs (on both nodes) should look like in the below snippet. Please make sure you've got appropriate certificates places in both nodes.
+```
+{
+    "client_addr": "0.0.0.0",
+    "datacenter": "nukelab",
+    "data_dir": "/var/devops/consul",
+    "domain": "consul",
+    "enable_script_checks": true,
+    "dns_config": {
+        "enable_truncate": true,
+        "only_passing": true
+    },
+    "enable_syslog": true,
+    "encrypt": "uFO39ExWFLHFf/TwnOPdkhROaowqnfyKyaMht/BC/A8=",
+    "leave_on_terminate": true,
+    "log_level": "INFO",
+    "rejoin_after_leave": true,
+    "server": false,
+    "start_join": [
+        "192.168.100.1"
+    ],
+    "ui": true,
+
+    "verify_incoming": true,
+    "verify_outgoing": true,
+    "verify_server_hostname": true,
+    "ca_file": "/etc/consul.d/certs/intermediate_ca.pem",
+    "cert_file": "/etc/consul.d/certs/worker01-client.pem",
+    "key_file": "/etc/consul.d/certs/worker01-client-key.pem",
+    "auto_encrypt": {
+    "tls": true
+    }
+}
+``` 
+
+Our Consul cluster can enjoy now secured communication.
