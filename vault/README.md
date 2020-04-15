@@ -91,3 +91,6 @@ Use `vault operator unseal` and supply one of the five unseal keys, you gotta su
 Repeat the procedure on each node.
 
 Now, we can go back to [consul setup](../consul/README.md) to set up TLS and ACL. When that is accomplished, we will come back to vault LTS, and follow the remaining steps of this document.
+
+#### 5. Set TLS and transit auto-unseal for vault
+
