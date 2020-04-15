@@ -2,7 +2,7 @@
 ### Create basic vault cluster. 
 ---
 
-Once you installed vault binaries in the server and the client nodes, either using the (script)[../bin/install_cluster.sh] or manually, you can start setting up basic vault cluster.
+Once you installed vault binaries in the server and the client nodes, either using the [script](../bin/install_cluster.sh) or manually, you can start setting up basic vault cluster.
 
 #### 1. Create libvirt zone services for vault
 
@@ -10,7 +10,7 @@ Add the following tcp/udp ports to the libvirt zone: 8200,8201; Then add tcp/820
 
 #### 2. Vault config 
 
-We will use consul distributed storage for vault KV storesi\ using the encryption key we set (at step 2 of consul basic configuration)[https://github.com/dominikmi/hashistuff/tree/master/consul#2-create-consul-encryption-key]. The cluster communication is set within the libvirt network 192.168.100.0/24. Don't worry about TLS for now, we will set it up later.
+We will use consul distributed storage for vault KV storesi\ using the encryption key we set [at step 2 of consul basic configuration](https://github.com/dominikmi/hashistuff/tree/master/consul#2-create-consul-encryption-key). The cluster communication is set within the libvirt network 192.168.100.0/24. Don't worry about TLS for now, we will set it up later.
 
 (/etc/vault.d/vault.hcl)
 
