@@ -514,3 +514,19 @@ acl = {
 ```
 
 The ACL for the client node agents differ only with the first agent token (the client access policy token).
+
+#### 11. Set secure UI access to Consul
+
+As you remember from the [cfssl tutorial](../cfssl/README.md), you had to generate your client cert for your browser. Well, that was not all, browsers need that bundled in the PKCS12 format with export password and username, to simply confirm that this "Your Certificate" is yours. So, once you get your laptop/workstation cert and key (.pem) generated, you have to transform that into the PFX bundle:
+`openssl pkcs12 -export -inkey dmlap-client-key.pem  -in dmlap-client.pem -name <my_username> -out dmlap_<my_username>.pfx`
+
+It's going to ask you for your export password, which you will need to import the .PFX file to your browser cert store. Once you have that cert file imported in your browser store, you can go now to `https://consul.nukelab.local:8501`. The Consul server will ask:
+![Is this cert Ok?](pictures/skrin1.png)
+
+What you will see is just an empty Consul UI 
+
+![empty UI](pictures/skrin2.png)
+
+why? because now, you have to go to the ACL tab and put the access token, which you already used in your CONSUL_HTTP_TOKEN, remember?
+
+![voila!](pictures/skrin3.png)
