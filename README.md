@@ -10,6 +10,7 @@ This is a repository with Various works and studies on Hashicorp nomad, consul a
 7. Setup Master Transit Vault instance with TLS,
 8. Enable transit auto-unseal on the Vault cluster,
 9. Setup ACL for Consul,
+10. Deploy private registry in Nomad
 
 Done. This task took me overall some 30 hours reading documentation, Hashicorp issues, logs, troubleshooting etc. It was fun. :) If I had a more powerful platform (with more RAM and cores) I'd certainly configure a setup more closely reflecting production environment - like 3 cluster server agents (Nomad and Consul). So, if you have more horsepower under the hood, the setup presented in this tutorial can be creatively expanded without any major problem.
 
@@ -20,6 +21,7 @@ From this tutorial you can learn the following aspects of hashicorp stuff:
 * How to setup [Vault](vault/README.md) with secure consul backend,
 * How to setup [transit auto-unseal](vault/README-transit.md) vault,
 * How to setup my own [Root CA, intermediate CA and certs](cfssl/README.md) for clusters services, communication and web.
+* Quick and dirty way to [deploy private and almost not insecure docker registry in Nomad](privreg/README.md).
 
 ### Prerequisites
 
@@ -57,3 +59,4 @@ All secrets mentioned in this tutorial come from a home lab setup. They are sole
  * [Hashicorp: Auto-unseal using Transit Secrets Engine](https://learn.hashicorp.com/vault/operations/autounseal-transit),
  * [Hashicorp: Transit seal](https://www.vaultproject.io/docs/configuration/seal/transit/),
  * [Katakoda: Vault Auto-Unseal](https://www.katacoda.com/hashicorp/scenarios/vault-auto-unseal),
+ * [Docker: Deploying registry](https://docs.docker.com/registry/deploying/).
