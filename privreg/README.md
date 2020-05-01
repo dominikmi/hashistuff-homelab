@@ -30,6 +30,8 @@ changed, another user has modified the job and the plan's results are
 potentially invalid.
 ```
 
+Then run it.
+```
 $ nomad job run registry.nomad
 ==> Monitoring evaluation "28ff0fad"
     Evaluation triggered by job "registry"
