@@ -67,13 +67,45 @@ potentially invalid.
 ```
 
 Are we Ok?
-
+Check the job (it runs at last!)
 ```
-curl -X GET https://dmthin.nukelab.local:5000/v2/_catalog
+$ nomad job status registry
+ID            = registry
+Name          = registry
+Submit Date   = 2020-05-01T20:17:09+02:00
+Type          = service
+Priority      = 10
+Datacenters   = dc1
+Namespace     = default
+Status        = running
+Periodic      = false
+Parameterized = false
+
+Summary
+Task Group  Queued  Starting  Running  Failed  Complete  Lost
+registry    0       0         1        0       6         0
+
+Latest Deployment
+ID          = 69b315f0
+Status      = failed
+Description = Failed due to progress deadline
+
+Deployed
+Task Group  Desired  Placed  Healthy  Unhealthy  Progress Deadline
+registry    1        1       0        1          2020-05-01T20:27:09+02:00
+
+Allocations
+ID        Node ID   Task Group  Version  Desired  Status   Created    Modified
+7dc86f28  112c23f5  registry    8        run      running  1h39s ago  55m39s ago
+```
+
+Check the repo.
+```
+$ curl -X GET https://dmthin.nukelab.local:5000/v2/_catalog
 {"repositories":["centos","jenkins"]}
 ```
 
-We are. Previously downloaded and retagged images are there and the repo responds on TLS 5000 port.
+We are Ok. Previously downloaded and retagged images are there and the repo responds on TLS 5000 port.
 
-**ps. Yeah, I've got another Nomad server, reanimated an old thinkpad :-) More coming soon.**
+*ps. Yeah, I've got another Nomad server, reanimated an old thinkpad :-) More coming soon.*
 
