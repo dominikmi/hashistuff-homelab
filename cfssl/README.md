@@ -1,8 +1,12 @@
+### Important note
+
+The below description is still valid, although requires some refresh. The steps #1 through #8 are already automated through [cfssl-pki ansible role](https://github.com/dominikmi/ansible-homelab/tree/main/playbooks/roles/cfssl-pki).  
+
 #### 1. Install cfssl & cfssljson from the github repo 
 
 The official v1.2 binaries contain bug. You can install and perform the whole procesure anywhere, but at the end you will have to manually distribute the certs. I am installing it on my Fedora 31 laptop, and later on I am going to distribute the certs manually to the NUC host and the virtual machines.
 
-* `$ sudo yum install go` (this will install 1.13 on Fedora 31)
+* `$ sudo yum install go` (this will install 1.16 on Fedora 34 or CentOS 8)
 * `$ go get -u github.com/cloudflare/cfssl/cmd/cfssl`
 * `$ sudo cp ~/go/bin/cfssl /usr/local/bin/cfssl`
 * `$ go get -u github.com/cloudflare/cfssl/cmd/cfssljson`
