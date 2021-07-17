@@ -3,7 +3,7 @@
 As of now, this repo is a bit obsolete, given new version of the Hashicorp trio. Although, it is still good for a start if you consider using Nomad, Consul and Vault version up to Nomad: 0.10.x, Vault: 1.5.x and Consul: 1.6.x. I am working towards Anible driven automation of the certificates management and cluster deployment. Stay tuned. Thanks.
 
 [Update, 2021/07/04]
-Setting up Root CA, intermediate CA and certs are partially automated through [cfssl-pki ansible role](https://github.com/dominikmi/ansible-homelab/tree/main/playbooks/roles/cfssl-pki). 
+Setting up Root CA, intermediate CA and certs are automated through [cfssl-pki ansible role](https://github.com/dominikmi/ansible-homelab/tree/main/playbooks/roles/cfssl-pki). 
 
 ## hashistuff
 This is a repository with Various works and studies on Hashicorp nomad, consul and vault. I appreciate all those on-line classes, and (sometimes not quite intuitive) documentation, but actually the best way is the DYI approach. Setting up a secure Nomad cluster supported by consul and vault featuring transit autounseal is rather a complex task. Hence, I divided this complex task into the list of steps in the following order:
@@ -27,17 +27,17 @@ From this tutorial you can learn the following aspects of hashicorp stuff:
 * How to setup secure [Consul cluster](consul/README.md), 
 * How to setup [Vault](vault/README.md) with secure consul backend,
 * How to setup [transit auto-unseal](vault/README-transit.md) vault,
-* How to setup my own [Root CA, intermediate CA and certs](cfssl/README.md) for clusters services, communication and web.
+* How to setup [Root CA, intermediate CA and certs](cfssl/README.md) for local lab's clusters services, communication and web.
 * Quick and dirty way to [deploy private and almost not insecure docker registry in Nomad](privreg/README.md).
 
 ### Prerequisites
 
-* A CentOS 8 machine with min. 8GB RAM, 4 cores and 128G HDD/SSD
+* A CentOS 8 machine with min. 16GB RAM, 4 cores and 128G HDD/SSD
 * A fully controlled local WiFi or any other LAN,
 * Libvirtd active and configured as NAT, with static IPs and dnsmasq turned off on CentOS 8,
 * BIND 9 installed and configured for hosts in both nets: public LAN and Libvirtd (can be installed on the CentOS 8 box or anywhere else in the LAN).
 
-__Note:__ By default, there's Podman installed in CentOS 8 as the containers runtime. No worries, the Nomad server does not use it. The Nomad clients have docker.io package installed.
+__Note:__ By default, there's Podman installed in CentOS 8 as the containers runtime. No worries, my Nomad cluster does not use it. The Nomad clients will have docker.io package installed.
 
 ### Network diagram
 
