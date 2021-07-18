@@ -1,9 +1,10 @@
 # Note
-[Update, 2021/07/01]
-As of now, this repo is a bit obsolete, given new version of the Hashicorp trio. Although, it is still good for a start if you consider using Nomad, Consul and Vault version up to Nomad: 0.10.x, Vault: 1.5.x and Consul: 1.6.x. I am working towards Anible driven automation of the certificates management and cluster deployment. Stay tuned. Thanks.
 
-[Update, 2021/07/04]
+**[Update, 2021/07/04]**
 Setting up Root CA, intermediate CA and certs are automated through [cfssl-pki ansible role](https://github.com/dominikmi/ansible-homelab/tree/main/playbooks/roles/cfssl-pki). 
+
+**[Update, 2021/07/01]**
+As of now, this repo is a bit obsolete, given new version of the Hashicorp trio. Although, it is still good for a start if you consider using Nomad, Consul and Vault version up to Nomad: 0.10.x, Vault: 1.5.x and Consul: 1.6.x. I am working towards Anible driven automation of the certificates management and cluster deployment. Stay tuned. Thanks.
 
 ## hashistuff
 This is a repository with Various works and studies on Hashicorp nomad, consul and vault. I appreciate all those on-line classes, and (sometimes not quite intuitive) documentation, but actually the best way is the DYI approach. Setting up a secure Nomad cluster supported by consul and vault featuring transit autounseal is rather a complex task. Hence, I divided this complex task into the list of steps in the following order:
