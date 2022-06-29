@@ -40,13 +40,13 @@ job "trivy-server" {
     task "trivy-scan-server" {
       driver = "docker"
       config {
-	      image = "powernuke.nukelab.home:5443/trivy:0.22.0-2"
-        ports = ["scan"]
-        args = ["server"]
+	      image = "powernuke.nukelab.home:5443/trivy:0.28.1-1"
+              ports = ["scan"]
+              args = ["server", "--listen", "0.0.0.0:${NOMAD_PORT_scan}"]
       }
-      env {
-        TRIVY_LISTEN="localhost:${NOMAD_PORT_scan}"
-      }
+#      env {
+#        TRIVY_LISTEN="localhost:${NOMAD_PORT_scan}"
+#      }
       service {
         name = "trivy-scan-port"
         tags = ["global", "cache"]
