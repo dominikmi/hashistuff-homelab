@@ -52,7 +52,7 @@ job "my-fs-app" {
         env = true
 # Read app secrets from Vault
         data = <<EOF
-{{with secret "kv/my-fs-app"}}
+{{with secret "kv/data/my-fs-app"}}
 {{range $key, $value := .Data.data}}
 {{$key}}={{$value | toJSON}}{{end}}
 {{end}}

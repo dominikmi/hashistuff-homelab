@@ -45,14 +45,14 @@ job "my-fs-app" {
         ports = ["app"] 
       }
       vault {
-        policies = ["app-access"]
+        policies = ["my-fs-app-access"]
       }
       template {
         destination = "secrets/file.env"
         env = true
 # Read app secrets from Vault
         data = <<EOF
-{{with secret "kv/my-fs-app"}}
+{{with secret "kv/data/my-fs-app"}}
 {{range $key, $value := .Data.data}}
 {{$key}}={{$value | toJSON}}{{end}}
 {{end}}

@@ -1,11 +1,10 @@
-# Access mongodb username & pass
+i# Access apps secrets
 
-path "database/mongodb/static-creds/*" {
+path "kv/data/my-fs-app" {
   capabilities = ["read"]
 }
 
-# Access other app's secrets
-
-path "secret/kv/data/my-fs-app/*" {
+path "secret/kv/data/my-fs-app" {
   capabilities = ["read"]
 }
+
