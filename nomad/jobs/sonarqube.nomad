@@ -47,7 +47,10 @@ job "sonarqube" {
       driver = "docker"
       config {
 	      image   = "powernuke.nukelab.home:5443/postgres:12.10-3"
-        volumes = [ "/data/store1:/var/lib/postgresql","/data/store1/data:/var/lib/postgresql/data," ]
+        volumes = [
+          "/data/store1/:/var/lib/postgresql",
+          "/data/store1/data:/var/lib/postgresql/data",
+        ]
         ports   = ["postgres"]
       }
       vault {
@@ -123,8 +126,8 @@ EOF
         }
       }
       resources {
-        cpu    = 512 # 512Mhz
-        memory = 2048 # 2GB
+        cpu    = 1024 # up to 1Ghz
+        memory = 2048 # up to 2GB
       }
     } # close task
   } # close group
