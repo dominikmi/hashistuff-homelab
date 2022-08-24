@@ -1,8 +1,5 @@
-# Sonarqube + postgresql deployed in Nomad 1.2.6
-# 26-03-2022, v0.1
-# 23-06-2022, v0.2
 # 24-08-2022, v0.3, Nomad 1.3.3
-# both tasks are mutually dependent if either fails the whole deployment fails, even though the other task was healthy
+# Postgresql runs as prestart sidecar for Sonarqube
 
 job "sonarqube" {
   datacenters = ["dc1"]
@@ -73,7 +70,7 @@ EOF
         sidecar = true
         hook = "prestart"
       }
-      
+
       service {
         name = "postgres"
         tags = ["global", "cache"]
