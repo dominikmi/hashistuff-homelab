@@ -68,8 +68,14 @@ job "sonarqube" {
 {{end}}
 EOF
       }
+
+      lifecycle {
+        sidecar = true
+        hook = "prestart"
+      }
+      
       service {
-        name = "sonarqube"
+        name = "postgres"
         tags = ["global", "cache"]
         port = "postgres"
         check {
