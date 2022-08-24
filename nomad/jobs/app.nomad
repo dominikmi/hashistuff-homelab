@@ -1,5 +1,5 @@
-# App deployment in Nomad 1.3.1
-# w/ vault templates
+# App deployment in Nomad 1.3.3
+# w/ vault templates and Mongo as pre-start sidecar
 
 
 job "my-fs-app" {
@@ -29,12 +29,66 @@ job "my-fs-app" {
 # define network within the group
 
     network {
+      
       port "app" { 
 	      static = 3000
 	      to     = 3000 
       }
+
+      port "mongo" { 
+	      static = 27017
+	      to     = 27017 
+      }
+
       dns { servers = ["192.168.100.1"] }
     }
+
+# This is where MongoDB as sidecar is deployed
+
+    task "mongo" {
+      driver = "docker"
+      config {
+	      image = "powernuke.nukelab.home:5443/mongodb:4.4.13-1"
+	      volumes = [ "/data/mongodb/data:/data/db", ]
+        ports = ["mongo"] 
+      }
+      vault {
+        policies = ["mongodb-access"]
+      }
+      template {
+        destination = "secrets/file.env"
+        env = true
+# Read mongo secrets from Vault
+        data = <<EOF
+{{with secret "kv/data/mongo"}}
+{{range $key, $value := .Data.data}}
+{{$key}}={{$value | toJSON}}{{end}}
+{{end}}
+EOF
+      }
+
+      lifecycle {
+        sidecar = true
+        hook = "prestart"
+      }
+
+      service {
+        name = "mongodb"
+        tags = ["global", "cache"]
+        port = "mongo"
+        check {
+          name     = "tcp_validate"    
+          type     = "tcp"    
+          port     = "mongo"    
+          interval = "15s"    
+          timeout  = "30s"
+        }
+      }
+      resources {
+        cpu    = 512 # 512Mhz
+        memory = 1024 # 1GB
+      }
+    } # close task
 
 # This is where the app gets deployed
 		
