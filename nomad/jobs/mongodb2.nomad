@@ -31,8 +31,8 @@ job "mongodb" {
 
     network {
       port "mongo" { 
-	static = 27017
-	to     = 27017 
+	      static = 27017
+	      to     = 27017 
       }
       dns { servers = ["192.168.100.1"] }
     }
@@ -42,8 +42,8 @@ job "mongodb" {
     task "mongo" {
       driver = "docker"
       config {
-	image = "powernuke.nukelab.home:5443/mongodb:4.4.13-1"
-	volumes = [ "/data/mongodb/data:/data/db", ]
+	      image = "powernuke.nukelab.home:5443/mongodb:4.4.13-1"
+	      volumes = [ "/data/mongodb/data:/data/db", ]
         ports = ["mongo"] 
       }
       vault {

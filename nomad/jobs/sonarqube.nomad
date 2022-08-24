@@ -1,6 +1,7 @@
 # Sonarqube + postgresql deployed in Nomad 1.2.6
 # 26-03-2022, v0.1
 # 23-06-2022, v0.2
+# 24-08-2022, v0.3, Nomad 1.3.3
 
 job "sonarqube" {
   datacenters = ["dc1"]
@@ -40,40 +41,28 @@ job "sonarqube" {
       dns { servers = ["192.168.100.1"] }
     }
 
-# volumes
-
-    volume "store1" {
-      type      = "host"
-      read_only = false
-      source    = "store1"
-    }
-
-    volume "store2" {
-      type      = "host"
-      read_only = false
-      source    = "store2"
-    }
-
 # This is where postgresql is deployed
 
     task "postgresql" {
       driver = "docker"
-      
-      volume_mount {
-        volume      = "store1"
-        destination = "/var/lib/postgresql"
-        read_only   = false
-      }
-      
       config {
-        image = "postgres:12.10"
-#	      image = "powernuke.nukelab.home:5443/postgres:12.10-2"
-        ports = ["postgres"]
+	      image   = "powernuke.nukelab.home:5443/postgres:12.10-3"
+        volumes = [ "/data/store1:/var/lib/postgresql","/data/store1/data:/var/lib/postgresql/data," ]
+        ports   = ["postgres"]
       }
-
-      env {
-        POSTGRES_USER=sonar
-        POSTGRES_PASSWORD=sonar
+      vault {
+        policies = ["postgres-access"]
+      }
+      template {
+        destination = "secrets/file.env"
+        env = true
+# Read postgres secrets from Vault
+        data = <<EOF
+{{with secret "kv/data/postgres"}}
+{{range $key, $value := .Data.data}}
+{{$key}}={{$value | toJSON}}{{end}}
+{{end}}
+EOF
       }
       service {
         name = "sonarqube"
@@ -94,25 +83,32 @@ job "sonarqube" {
     } # close task
 
 # This is where the sonarqube gets deployed
-		
+
     task "sonar" {
       driver = "docker"
-      
-      volume_mount {
-        volume      = "store2"
-        destination = "/opt/sonarqube"
-        read_only   = false
-      }
-      
       config {
-        image = "sonarqube:9.3.0-community"
-#	      image = "powernuke.nukelab.home:5443/sonarqube:9.3.0-1"
-        ports = ["sonar"] 
+	      image   = "powernuke.nukelab.home:5443/sonarqube:9.6.0-3"
+        volumes = [
+          "/data/store2/data:/opt/sonarqube/data",
+          "/data/store2/extensions:/opt/sonarqube/extensions",
+          "/data/store2/logs:/opt/sonarqube/logs",
+          "/data/store2/temp:/opt/sonarqube/temp",
+        ]
+        ports   = ["sonar"] 
       }
-      env {
-        SONAR_JDBC_URL="jdbc:postgresql://192.168.100.102:5432/sonar"
-        SONAR_JDBC_USERNAME=sonar
-        SONAR_JDBC_PASSWORD=sonar
+      vault {
+        policies = ["sonar-access"]
+      }
+      template {
+        destination = "secrets/file.env"
+        env = true
+# Read sonarqube secrets from Vault
+        data = <<EOF
+{{with secret "kv/data/sonar"}}
+{{range $key, $value := .Data.data}}
+{{$key}}={{$value | toJSON}}{{end}}
+{{end}}
+EOF
       }
       service {
         name = "sonarqube"
@@ -131,6 +127,5 @@ job "sonarqube" {
         memory = 2048 # 2GB
       }
     } # close task
-
   } # close group
 } # close job
