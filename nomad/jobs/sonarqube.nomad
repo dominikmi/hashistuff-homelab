@@ -7,7 +7,7 @@ job "sonarqube" {
   priority = 10
   constraint {
       attribute = "${attr.unique.hostname}"
-      value     = "srv2u100"
+      value     = "powernuke"
   }
   update {
     stagger          = "15s"
