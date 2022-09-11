@@ -50,7 +50,7 @@ job "countdash" {
      task "dashboard" {
        driver = "docker"
        env {
-         COUNTING_SERVICE_URL = "http://${NOMAD_UPSTREAM_ADDR_count_api}"
+         COUNTING_SERVICE_URL = "https://${NOMAD_UPSTREAM_ADDR_count_api}"
        }
        config {
          image = "hashicorpnomad/counter-dashboard:v1"
