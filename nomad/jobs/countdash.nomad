@@ -1,3 +1,6 @@
+# another test job to test consul proxy side-car mechanism
+# v0.1
+
 job "countdash" {
    datacenters = ["dc1"]
    group "api" {

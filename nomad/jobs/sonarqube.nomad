@@ -44,7 +44,7 @@ job "sonarqube" {
     task "postgresql" {
       driver = "docker"
       config {
-	      image   = "powernuke.nukelab.home:5443/postgres:12.10-3"
+	      image   = "powernuke.nukelab.home:5443/postgres:12.10-4"
         volumes = [
           "/data/store1/:/var/lib/postgresql",
           "/data/store1/data:/var/lib/postgresql/data",
@@ -94,7 +94,7 @@ EOF
     task "sonar" {
       driver = "docker"
       config {
-	      image   = "powernuke.nukelab.home:5443/sonarqube:9.6.0-3"
+	      image   = "powernuke.nukelab.home:5443/sonarqube:9.6.1-1"
         volumes = [
           "/data/store2/data:/opt/sonarqube/data",
           "/data/store2/extensions:/opt/sonarqube/extensions",

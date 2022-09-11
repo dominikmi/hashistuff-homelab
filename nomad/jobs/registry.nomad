@@ -41,7 +41,7 @@ job "registry" {
     task "registry" {
       driver = "docker"
       config {
-	image = "powernuke.nukelab.home:5443/registry:2.8.1-2"
+	image = "powernuke.nukelab.home:5443/registry:2.8.1-3"
 	volumes = [
 		"/data/registry:/var/lib/registry",
 		"/etc/pki/tls/certs/powernuke-peer-fullchain.pem:/certs/powernuke-peer-fullchain.pem",
