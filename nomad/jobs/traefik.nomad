@@ -72,31 +72,10 @@ job "traefik" {
       config {
         image = "powernuke.nukelab.home:5443/traefik:2.8.4-8"
         ports = ["api", "http", "https"]
-        args = [ "--configFile", 
-                 "/local/traefik.yml",
-                 "--providers.file.directory=/local/",
-                 "--providers.file.watch=true"
-        ]
+        args = [ "--configFile", "/local/traefik.yml" ]
       }
       vault {
         policies = ["traefik-access"]
-      }
-
-## setting up env variables
-
-      template {
-        data = <<EOH
-{{ with secret "kv/data/traefik/nukelab" }}
-CONSUL_HTTP_TOKEN={{.Data.data.consultoken | toJSON }}
-TRAEFIK_PROVIDERS_CONSULCATALOG_ENDPOINT_TLS_CA={{.Data.data.ca | toJSON }}
-TRAEFIK_PROVIDERS_CONSULCATALOG_ENDPOINT_TLS_CERT={{.Data.data.fullchain | toJSON }}
-TRAEFIK_PROVIDERS_CONSULCATALOG_ENDPOINT_TLS_KEY={{.Data.data.certkey | toJSON }}
-TRAEFIK_PROVIDERS_CONSULCATALOG_ENDPOINT_TOKEN={{.Data.data.consultoken | toJSON }}
-{{ end }}
-EOH 
-        env         = true
-        destination = "secrets/traefik.env"
-        change_mode = "noop"
       }
 
 ## setting up primary dynamic config in the container's /local
@@ -106,7 +85,7 @@ EOH
 tls:
  certificates:
    - certFile: /local/traefik.crt
-     keyFile: /local/traefic.key
+     keyFile: /local/traefik.key
  stores:
    default:
      defaultCertificate:
@@ -123,7 +102,7 @@ EOH
       template {
         data        = <<EOH
 {{ with secret "kv/data/traefik/nukelab" }}
-{{ .Data.data.certkey | toJSON }}
+{{ .Data.data.certkey }}
 {{ end }}
 EOH
         destination = "/local/traefik.key"
@@ -133,10 +112,20 @@ EOH
       template {
         data        = <<EOH
 {{ with secret "kv/data/traefik/nukelab" }}
-{{ .Data.data.fullchain | toJSON }}
+{{ .Data.data.fullchain }}
 {{ end }}
 EOH
         destination = "/local/traefik.crt"
+        change_mode = "restart"
+        splay       = "1m"
+      }
+      template {
+        data        = <<EOH
+{{ with secret "kv/data/traefik/nukelab" }}
+{{ .Data.data.ca }}
+{{ end }}
+EOH
+        destination = "/local/ca.crt"
         change_mode = "restart"
         splay       = "1m"
       }
@@ -169,12 +158,17 @@ providers:
  consulCatalog:
    endpoint:
      scheme: "https"
-     address: https://powernuke.nukelab.home:8501
+     address: "powernuke.nukelab.home:8501"
      datacenter: nukelab
-     token: {{ .Data.data.consultoken }} 
+     token: {{ .Data.data.consultoken | toJSON}}
+     tls:
+        ca: /local/ca.crt
+        cert: /local/traefik.crt
+        key: /local/traefik.key
+        insecureSkipVerify: true 
    cache: true
    prefix: traefik
-   exposedByDefault: false
+   exposedByDefault: true
 {{ end }}
 EOH
 

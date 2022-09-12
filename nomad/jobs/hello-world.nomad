@@ -19,7 +19,7 @@ job "hello-world" {
    service {
      tags = [
        "traefik.http.routers.hello-world.rule=Host(`hello-world.nukelab.home`)",
-       "traefik.http.routers.hello-world.entrypoints=websecure",
+       "traefik.http.routers.hello-world.entrypoints=web",
        "traefik.http.routers.hello-world.tls=true",
        "traefik.enable=true",
      ]
