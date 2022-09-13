@@ -1,11 +1,11 @@
 # App deployment in Nomad 1.3.3
 # w/ vault templates and Mongo as pre-start sidecar
+# w/ Traefik labels and global TLS entrypoint
 
-
-job "my-fs-app" {
+job "myapp" {
   datacenters = ["dc1"]
   type = "service"
-  priority = 10
+  priority = 30
   constraint {
     attribute = "${attr.unique.hostname}"
     value     = "srv1u100"
@@ -43,12 +43,46 @@ job "my-fs-app" {
       dns { servers = ["192.168.100.1"] }
     }
 
+# services definition and labelling
+
+    service {
+      name = "mongodb"
+      tags = ["global", "cache"]
+      port = "mongo"
+      check {
+        name     = "tcp_validate"    
+        type     = "tcp"    
+        port     = "mongo"    
+        interval = "15s"    
+        timeout  = "30s"
+      }
+    }
+
+    service {
+      name="myapp"
+      tags = [
+        "traefik",
+        "traefik.enable=true",
+        "traefik.http.routers.myapp.rule=Host(`myapp.nukelab.home`)",
+        "traefik.http.routers.myapp.tls=true",
+      ]
+      port = "app"
+      check {
+        name     = "app_health"    
+        type     = "http"
+        path     = "/"    
+        port     = "app"    
+        interval = "30s"    
+        timeout  = "10s"
+      }
+    }
+
 # This is where MongoDB as sidecar is deployed
 
     task "mongo" {
       driver = "docker"
       config {
-	      image = "powernuke.nukelab.home:5443/mongodb:4.4.14-3"
+	      image = "powernuke.nukelab.home:5443/mongodb:4.4.13-1"
 	      volumes = [ "/data/mongodb/data:/data/db", ]
         ports = ["mongo"] 
       }
@@ -66,24 +100,10 @@ job "my-fs-app" {
 {{end}}
 EOF
       }
-
       lifecycle {
         sidecar = true
         hook = "prestart"
-      }
-
-      service {
-        name = "mongodb"
-        tags = ["global", "cache"]
-        port = "mongo"
-        check {
-          name     = "tcp_validate"    
-          type     = "tcp"    
-          port     = "mongo"    
-          interval = "15s"    
-          timeout  = "30s"
-        }
-      }
+      }      
       resources {
         cpu    = 512 # 512Mhz
         memory = 1024 # 1GB
@@ -92,7 +112,7 @@ EOF
 
 # This is where the app gets deployed
 		
-    task "app-instance" {
+    task "myapp" {
       driver = "docker"
       config {
 	      image = "powernuke.nukelab.home:5443/my-fs-app:0.8.3"
@@ -111,20 +131,7 @@ EOF
 {{$key}}={{$value | toJSON}}{{end}}
 {{end}}
 EOF
-      }
-      service {
-        name = "app-instance"
-        tags = ["global", "cache"]
-        port = "app"
-        check {
-          name     = "app_health"    
-          type     = "http"
-          path     = "/"    
-          port     = "app"    
-          interval = "30s"    
-          timeout  = "10s"
-        }
-      }
+      }      
       resources {
         cpu    = 128 # 128Mhz
         memory = 256 # 256MB

@@ -1,10 +1,10 @@
-# 09-09-2022, v0.1 Nomad 1.3.5
-# Traefik test deployment
+### 09-09-2022, v0.1 Nomad 1.3.5
+### Traefik test deployment
 
 job "traefik" {
   datacenters = ["dc1"]
   type        = "service"
-  priority    = 20  
+  priority    = 10  
   constraint {
       attribute = "${attr.unique.hostname}"
       value     = "powernuke"
@@ -38,21 +38,25 @@ job "traefik" {
         servers = ["192.168.120.231"]
       }
     }
+
+## set up labels passed on to Traefik itself for handling access over TLS to the dashboard
+
     service {
-      port = "http"
+      port = "https"
       tags = [
-           "traefik",
-           "traefik.enable=true",
-           "traefik.http.routers.dashboard.rule=Host(`traefik.nukelab.home`)",
-           "traefik.http.routers.dashboard.service=api@internal",
-           "traefik.http.routers.dashboard.entrypoints=web,websecure"
+          "traefik",
+          "traefik.enable=true",
+          "traefik.http.routers.dashboard.rule=Host(`traefik.nukelab.home`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))",
+          "traefik.http.routers.dashboard.tls: true",
+          "traefik.http.routers.dashboard.service=api@internal"
       ]
       check {
        type     = "tcp"
-       interval = "10s"
+       interval = "15s"
        timeout  = "5s"
       }
     }
+
     service {
       tags = ["lb", "api"]
       port = "api"
@@ -60,19 +64,21 @@ job "traefik" {
       check {
         type     = "http"
         path     = "/ping"
-        interval = "10s"
+        interval = "15s"
         timeout  = "5s"
       }
     }
 
-# This is where the Traefik is getting deployed
+## This is where the Traefik is getting deployed with initial config arguments
 
     task "proxy" {
       driver = "docker"
       config {
-        image = "powernuke.nukelab.home:5443/traefik:2.8.4-8"
-        ports = ["api", "http", "https"]
-        args = [ "--configFile", "/local/traefik.yml" ]
+#        network_mode  = "host"
+        command       = "traefik"
+        args          = [ "--configFile", "/local/traefik.yml" ]
+        image         = "powernuke.nukelab.home:5443/traefik:2.8.4-8"
+        ports         = ["api", "http", "https"]
       }
       vault {
         policies = ["traefik-access"]
@@ -83,19 +89,16 @@ job "traefik" {
       template {
        data        = <<EOH
 tls:
- certificates:
-   - certFile: /local/traefik.crt
-     keyFile: /local/traefik.key
- stores:
-   default:
-     defaultCertificate:
-       certFile: /local/traefik.crt
-       keyFile: /local/traefik.key
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /local/traefik.crt
+        keyFile: /local/traefik.key
 EOH
        destination = "/local/dynamic.yml"
        change_mode = "restart"
        splay       = "1m"
-     }
+      }
 
 ## filling up the traefik.crt and traefik.key from Vault and placing them in the /local sub-folder
 
@@ -112,7 +115,7 @@ EOH
       template {
         data        = <<EOH
 {{ with secret "kv/data/traefik/nukelab" }}
-{{ .Data.data.fullchain }}
+{{ .Data.data.cert }}
 {{ end }}
 EOH
         destination = "/local/traefik.crt"
@@ -136,39 +139,41 @@ EOH
         data = <<EOH
 {{ with secret "kv/data/traefik/nukelab" }}
 serversTransport:
- insecureSkipVerify: true
+  insecureSkipVerify: true
 entryPoints:
- web:
-   address: ":80"
- websecure:
-   address: ":443"
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
 api:
- dashboard: true
- insecure: true
- debug: true
+  dashboard: true
+  insecure: true
+  debug: true
 ping: {}
 accessLog: {}
 log:
- level: DEBUG
+  level: DEBUG
 providers:
- providersThrottleDuration: 15s
- file:
-   watch: true
-   filename: "/local/dynamic.yml"
- consulCatalog:
-   endpoint:
-     scheme: "https"
-     address: "powernuke.nukelab.home:8501"
-     datacenter: nukelab
-     token: {{ .Data.data.consultoken | toJSON}}
-     tls:
+  providersThrottleDuration: 15s
+  file:
+    watch: true
+    directory: "/local"
+  consulCatalog:
+    endpoint:
+      scheme: https
+      address: "powernuke.nukelab.home:8501"
+      datacenter: nukelab
+      token: {{ .Data.data.consultoken | toJSON}}
+      tls:
         ca: /local/ca.crt
         cert: /local/traefik.crt
         key: /local/traefik.key
         insecureSkipVerify: true 
-   cache: true
-   prefix: traefik
-   exposedByDefault: true
+    cache: false
+    prefix: traefik
+    connectAware: true
+    exposedByDefault: false
+    watch: true
 {{ end }}
 EOH
 
