@@ -91,7 +91,7 @@ job "registry2" {
     task "registry" {
       driver = "docker"
       config {
-	      image = "powernuke.nukelab.home:5443/registry:2.8.1-3"
+	      image = "powernuke.nukelab.home:5443/registry:2.8.1-4"
 	      volumes = [
 		      "/data/registry:/var/lib/registry",
 		      "/etc/pki/tls/certs/powernuke-peer-fullchain.pem:/certs/powernuke-peer-fullchain.pem",
@@ -114,7 +114,7 @@ job "registry2" {
     task "registry-ui" {
       driver = "docker"
       config {
-        image = "joxit/docker-registry-ui:latest"
+        image = "joxit/docker-registry-ui:2.2.2"
         ports = ["regui"]
       }
       env {
@@ -122,6 +122,7 @@ job "registry2" {
         REGISTRY_URL="https://powernuke.nukelab.home:5443"
         DELETE_IMAGES=true
         SINGLE_REGISTRY=true
+        NGINX_PROXY_PASS_URL="https://registry-ui.nukelab.home"
       }      
       resources {
         cpu    = 200
