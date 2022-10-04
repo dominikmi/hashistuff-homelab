@@ -73,7 +73,7 @@ job "registry2" {
         "traefik",
         "traefik.enable=true",
         "traefik.http.routers.regui.rule=Host(`regui.nukelab.home`)",
-        "traefik.http.routers.regui.tls=true"
+        "traefik.http.routers.regui.tls=false"
       ]
       port = "regui"
       check {
