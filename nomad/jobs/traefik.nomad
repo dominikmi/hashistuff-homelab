@@ -1,5 +1,6 @@
 ### 09-09-2022, v0.1 Nomad 1.3.5
 ### Traefik test deployment
+### 07-10-2022, v0.2 Nomad 1.4.1
 
 job "traefik" {
   datacenters = ["dc1"]
@@ -74,7 +75,7 @@ job "traefik" {
     task "proxy" {
       driver = "docker"
       config {
-#        network_mode  = "host"
+        network_mode  = "bridge"
         command       = "traefik"
         args          = [ "--configFile", "/local/traefik.yml" ]
         image         = "powernuke.nukelab.home:5443/traefik:2.9.1-1"
@@ -161,7 +162,7 @@ providers:
   consulCatalog:
     endpoint:
       scheme: https
-      address: "powernuke.nukelab.home:8501"
+      address: "powernukeint.nukelab.home:8501"
       datacenter: nukelab
       token: {{ .Data.data.consultoken | toJSON}}
       tls:

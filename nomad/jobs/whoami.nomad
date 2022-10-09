@@ -5,14 +5,15 @@ job "whoami" {
   type        = "service"
   datacenters = ["dc1"]
   constraint {
-      attribute = "${attr.unique.hostname}"
-      value     = "srv2u100"
+  attribute = "${attr.unique.hostname}"
+  value     = "srv2u100"
   }
   group "whoami" {
  
     network {
       port "http" {
-        static = 80
+#        static = 80
+        to     = 80
       }
     }
  

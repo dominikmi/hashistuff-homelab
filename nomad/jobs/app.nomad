@@ -5,7 +5,7 @@
 job "myapp" {
   datacenters = ["dc1"]
   type = "service"
-  priority = 30
+  priority = 20
   constraint {
     attribute = "${attr.unique.hostname}"
     value     = "srv1u100"
@@ -17,7 +17,7 @@ job "myapp" {
     healthy_deadline = "5m"
     auto_revert      = true
   }
-  group "application" {
+  group "myapp" {
     count = 1
     restart {
       attempts = 10
@@ -29,17 +29,14 @@ job "myapp" {
 # define network within the group
 
     network {
-      
       port "app" { 
-	      static = 3000
-	      to     = 3000 
+        static = 3000
+	to     = 3000 
       }
-
       port "mongo" { 
-	      static = 27017
-	      to     = 27017 
+	static = 27017
+	to     = 27017 
       }
-
       dns { servers = ["192.168.100.1"] }
     }
 

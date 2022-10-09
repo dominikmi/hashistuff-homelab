@@ -1,13 +1,14 @@
-# Trivy server deployed in Nomad 1.2.3
+# Trivy server deployed in Nomad 1.4.1
 # 22-01-2022, v0.1
+# 09-10-2022, v0.2
 
 job "trivy-server" {
   datacenters = ["dc1"]
   type = "service"
   priority = 10
   constraint {
-      attribute = "${attr.unique.hostname}"
-      value     = "powernuke"
+    attribute = "${attr.unique.hostname}"
+    value     = "powernuke"
   }
   update {
     stagger          = "10s"
@@ -29,24 +30,21 @@ job "trivy-server" {
 
     network {
       port "scan" { 
-	      static = 8000
-	      to     = 8000 
+        static = 8000
+        to     = 8000 
       }
       dns { servers = ["192.168.120.231"] }
     }
 
-# This is where the registry gets deployed
+# This is where the trivy server gets deployed
 		
     task "trivy-scan-server" {
       driver = "docker"
       config {
-	      image = "powernuke.nukelab.home:5443/trivy:0.31.3-1"
-              ports = ["scan"]
-              args = ["server", "--listen", "0.0.0.0:${NOMAD_PORT_scan}"]
+        image = "powernuke.nukelab.home:5443/trivy:0.31.3-1"
+        ports = ["scan"]
+        args = ["server", "--listen", "0.0.0.0:${NOMAD_PORT_scan}"]
       }
-#      env {
-#        TRIVY_LISTEN="localhost:${NOMAD_PORT_scan}"
-#      }
       service {
         name = "trivy-scan-port"
         tags = ["global", "cache"]

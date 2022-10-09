@@ -6,8 +6,8 @@ job "sonarqube" {
   type = "service"
   priority = 10
   constraint {
-      attribute = "${attr.unique.hostname}"
-      value     = "powernuke"
+    attribute = "${attr.unique.hostname}"
+    value     = "srv1u100"
   }
   update {
     stagger          = "15s"
@@ -29,8 +29,8 @@ job "sonarqube" {
 
     network {
       port "sonar" { 
-	      static = 9000
-	      to     = 9000 
+        static = 9000
+        to     = 9000 
       }
       port "postgres" {
         static = 5432
@@ -44,7 +44,7 @@ job "sonarqube" {
     task "postgresql" {
       driver = "docker"
       config {
-	      image   = "powernuke.nukelab.home:5443/postgres:12.10-4"
+	image   = "powernuke.nukelab.home:5443/postgres:12.10-4"
         volumes = [
           "/data/store1/:/var/lib/postgresql",
           "/data/store1/data:/var/lib/postgresql/data",
@@ -94,7 +94,7 @@ EOF
     task "sonar" {
       driver = "docker"
       config {
-	      image   = "powernuke.nukelab.home:5443/sonarqube:9.6.1-1"
+	image   = "powernuke.nukelab.home:5443/sonarqube:9.6.1-1"
         volumes = [
           "/data/store2/data:/opt/sonarqube/data",
           "/data/store2/extensions:/opt/sonarqube/extensions",
@@ -119,7 +119,12 @@ EOF
       }
       service {
         name = "sonarqube"
-        tags = ["global", "cache"]
+        tags = [
+          "traefik",
+          "traefik.enable=true",
+          "traefik.http.routers.sonarqube.rule=Host(`sonar.nukelab.home`)",
+          "traefik.http.routers.sonarqube.tls=true",
+        ]
         port = "sonar"
         check {
           name     = "tcp_validate"    

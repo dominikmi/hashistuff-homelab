@@ -3,6 +3,7 @@
 # 22-06-2022, v0.3
 # 16-09-2022, v0.4 registry+registry UI bound together
 # 03-10-2022, v0.5 registry+UI set as dependent deployment
+# 06-10-2022, v0.6 with Traefik tags in
 
 job "registry2" {
   datacenters = ["dc1"]
@@ -31,6 +32,7 @@ job "registry2" {
 # define network within the group
 
     network {
+      mode = "bridge"
       port "reg" { 
 	      static = 5443
 	      to     = 5443 
@@ -56,14 +58,14 @@ job "registry2" {
       ]
       port = "reg"
       check {
-	      name            = "HTTPS check"
+	name            = "HTTPS check"
         type            = "http"
         protocol        = "https"
-	      port            = "reg"
-	      path            = "/v2/_catalog"
-	      interval        = "30s"
-	      timeout         = "5s"
-	      method	  = "GET"
+	port            = "reg"
+	path            = "/v2/_catalog"
+	interval        = "30s"
+	timeout         = "5s"
+	method	  = "GET"
       }
     }
 
@@ -73,7 +75,7 @@ job "registry2" {
         "traefik",
         "traefik.enable=true",
         "traefik.http.routers.regui.rule=Host(`regui.nukelab.home`)",
-        "traefik.http.routers.regui.tls=false"
+        "traefik.http.routers.regui.tls=true"
       ]
       port = "regui"
       check {
@@ -92,18 +94,18 @@ job "registry2" {
     task "registry" {
       driver = "docker"
       config {
-	      image   = "powernuke.nukelab.home:5443/registry:2.8.1-7"
+	image   = "powernuke.nukelab.home:5443/registry:2.8.1-7"
         command = "registry"
         args    = [ "serve", "/local/registry-config.yml" ]
-	      volumes = [
-		      "/data/registry:/var/lib/registry",
-		      "/etc/pki/tls/certs/powernuke-peer-fullchain.pem:/certs/powernuke-peer-fullchain.pem",
-		      "/etc/pki/tls/private/powernuke-peer-key.pem:/private/powernuke-peer-key.pem"
-	      ]
+	  volumes = [
+	      "/data/registry:/var/lib/registry",
+	      "/etc/pki/tls/certs/powernuke-peer-fullchain.pem:/certs/powernuke-peer-fullchain.pem",
+	      "/etc/pki/tls/private/powernuke-peer-key.pem:/private/powernuke-peer-key.pem"
+	]
         ports = ["reg"] 
       }
       env {
-	      REGISTRY_HTTP_ADDR="0.0.0.0:5443"
+	REGISTRY_HTTP_ADDR="0.0.0.0:5443"
         REGISTRY_HTTP_TLS_CERTIFICATE = "/certs/powernuke-peer-fullchain.pem"
         REGISTRY_HTTP_TLS_KEY = "/private/powernuke-peer-key.pem"
         PORT = 5443
