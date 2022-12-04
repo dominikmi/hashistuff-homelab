@@ -198,13 +198,11 @@ log_type unsubscribe
 log_type all
 websockets_log_level 14
 
-pid_file /var/run/mosquitto.pid
-
 persistence true
 persistence_location /mosquitto/data/
 log_dest file /mosquitto/log/mosquitto.log
 
-port 1883
+listener 1883
 allow_anonymous false
 password_file /local/pwdmqtt.txt
 
