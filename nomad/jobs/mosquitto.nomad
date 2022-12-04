@@ -102,7 +102,7 @@ job "mosquitto" {
         network_mode  = "bridge"
         command       = "traefikmosquitto"
         args          = [ "-c", "/local/mosquitto.conf" ]
-        image         = "powernuke.nukelab.home:5443/mosquitto:2.0.15-1"
+        image         = "powernuke.nukelab.home:5443/mosquitto:2.0.15-2"
         volumes = [
           "/data/mosquitto/data:/mosquitto/data",
           "/data/mosquitto/logs:/mosquitto/logs"
