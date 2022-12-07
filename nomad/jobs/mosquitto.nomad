@@ -56,42 +56,6 @@ job "mosquitto" {
       }
     }
 
-    service {
-      port = "websockets"
-      tags = [
-        "traefik",
-        "traefik.enable=true",
-        "traefik.tcp.services.mqtt_websockets.loadbalancer.server.port=9001",
-        "traefik.tcp.routers.tcpr_mqtt_websockets.entrypoints=websockets",
-        "traefik.tcp.routers.tcpr_mqtt_websockets.rule=HostSNI(`mosq.nukelab.home`)",
-        "traefik.tcp.routers.tcpr_mqtt_websockets.service=mqtt_websockets"
-      ]
-      check {
-        type     = "http"
-        path     = "/"
-        interval = "15s"
-        timeout  = "5s"
-      }
-    }
-
-    service {
-      port = "secwebsockets"
-      tags = [
-        "traefik",
-        "traefik.enable=true",
-        "traefik.tcp.services.mqtt_secwebsockets.loadbalancer.server.port=8084",
-        "traefik.tcp.routers.tcpr_mqtt_secwebsockets.entrypoints=secwebsockets",
-        "traefik.tcp.routers.tcpr_mqtt_secwebsockets.rule=HostSNI(`mosq.nukelab.home`)",
-        "traefik.tcp.routers.tcpr_mqtt_secwebsockets.service=mqtt_secwebsockets"
-      ]
-      check {
-        type     = "http"
-        path     = "/"
-        interval = "15s"
-        timeout  = "5s"
-      }
-    }
-
 ## This is where the mosquitto gets deployed with initial config arguments
 
     task "mosquitto-instance" {

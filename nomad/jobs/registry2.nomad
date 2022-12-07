@@ -101,6 +101,7 @@ job "registry2" {
 	        "/data/registry:/var/lib/registry",
 	        "/etc/pki/tls/certs/powernuke-peer-fullchain.pem:/certs/powernuke-peer-fullchain.pem",
 	        "/etc/pki/tls/private/powernuke-peer-key.pem:/private/powernuke-peer-key.pem"
+        ]
         ports = ["reg"] 
       }
       env {
