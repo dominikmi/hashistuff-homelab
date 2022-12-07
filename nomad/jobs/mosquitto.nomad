@@ -61,7 +61,6 @@ job "mosquitto" {
     task "mosquitto-instance" {
       driver = "docker"
       config {
-        network_mode  = "bridge"
         command       = "mosquitto"
         args          = [ "-c", "/local/mosquitto.conf" ]
         image         = "powernuke.nukelab.home:5443/mosquitto:2.0.15-3"
