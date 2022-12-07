@@ -77,7 +77,7 @@ job "telegraf" {
         env = true
 # Read initial Influx token and config URL from Vault
         data = <<EOF
-{{with secret "kv/data/influxdb"}}
+{{with secret "kv/data/telegraf"}}
 {{range $key, $value := .Data.data}}
 {{$key}}={{$value | toJSON}}{{end}}
 {{end}}
