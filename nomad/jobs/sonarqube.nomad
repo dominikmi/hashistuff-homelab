@@ -57,7 +57,7 @@ job "sonarqube" {
       template {
         destination = "secrets/file.env"
         env = true
-# Read postgres secrets from Vault
+# Read influxdb initial settings from Vault
         data = <<EOF
 {{with secret "kv/data/postgres"}}
 {{range $key, $value := .Data.data}}
@@ -94,7 +94,7 @@ EOF
     task "sonar" {
       driver = "docker"
       config {
-	image   = "powernuke.nukelab.home:5443/sonarqube:9.6.1-1"
+	      image   = "powernuke.nukelab.home:5443/sonarqube:9.6.1-1"
         volumes = [
           "/data/store2/data:/opt/sonarqube/data",
           "/data/store2/extensions:/opt/sonarqube/extensions",

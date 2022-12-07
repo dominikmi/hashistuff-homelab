@@ -18,9 +18,6 @@ job "mosquitto" {
   }
   group "mosquitto" {
     count = 1
-    update {
-      auto_revert = true
-    }
     network {
       port  "mqtt" {
         to     = 1883 

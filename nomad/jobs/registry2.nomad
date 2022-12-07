@@ -58,7 +58,7 @@ job "registry2" {
       ]
       port = "reg"
       check {
-	name            = "HTTPS check"
+	      name            = "HTTPS check"
         type            = "http"
         protocol        = "https"
 	port            = "reg"
