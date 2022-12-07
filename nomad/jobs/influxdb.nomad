@@ -39,11 +39,11 @@ job "influxdb" {
         "traefik.http.routers.influxdb.tls=true"
       ]
       check {
-        type     = "http"
+        type     = "https"
         path     = "/"    
         port     = "influx"    
         interval = "30s"    
-        timeout  = "10s"
+        timeout  = "15s"
       }
     }
     restart {

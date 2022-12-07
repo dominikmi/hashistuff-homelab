@@ -66,7 +66,7 @@ job "telegraf" {
       config {
         image   = "powernuke.nukelab.home:5443/telegraf:1.2.24-1"
         command = "telegraf"
-        args    = ["--config", "$CONFIG_URL"]
+        args    = ["--config", "${INFLUX_CONFIG_URL}"]
         ports = ["tele1u", "tele2u", "tele3t"]
       }
       vault {
@@ -82,6 +82,7 @@ job "telegraf" {
 {{$key}}={{$value | toJSON}}{{end}}
 {{end}}
 EOF
+        change_mode = "restart"
       }
       resources {
         cpu    = 300 # 300 MHz
