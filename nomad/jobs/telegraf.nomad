@@ -66,7 +66,7 @@ job "telegraf" {
       config {
         image   = "powernuke.nukelab.home:5443/telegraf:1.2.24-1"
         command = "telegraf"
-        args    = ["--config", "${CONFIG_URL}"]
+        args    = ["--config", "$CONFIG_URL"]
         ports = ["tele1u", "tele2u", "tele3t"]
       }
       vault {
