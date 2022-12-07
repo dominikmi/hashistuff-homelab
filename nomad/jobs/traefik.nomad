@@ -23,6 +23,7 @@ job "traefik" {
       auto_revert = true
     }
     network {
+      mode     = "bridge"
       port  "http" {
         to     = 80 
         static = 80
@@ -75,7 +76,6 @@ job "traefik" {
     task "proxy" {
       driver = "docker"
       config {
-        network_mode  = "bridge"
         command       = "traefik"
         args          = [ "--configFile", "/local/traefik.yml" ]
         image         = "powernuke.nukelab.home:5443/traefik:2.9.5-1"

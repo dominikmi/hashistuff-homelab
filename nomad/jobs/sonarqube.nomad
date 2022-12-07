@@ -44,7 +44,7 @@ job "sonarqube" {
     task "postgresql" {
       driver = "docker"
       config {
-	image   = "powernuke.nukelab.home:5443/postgres:12.10-4"
+	      image   = "powernuke.nukelab.home:5443/postgres:12.10-4"
         volumes = [
           "/data/store1/:/var/lib/postgresql",
           "/data/store1/data:/var/lib/postgresql/data",

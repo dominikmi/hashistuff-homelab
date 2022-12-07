@@ -19,6 +19,7 @@ job "mosquitto" {
   group "mosquitto" {
     count = 1
     network {
+      mode = "bridge"
       port  "mqtt" {
         to     = 1883 
         static = 1883

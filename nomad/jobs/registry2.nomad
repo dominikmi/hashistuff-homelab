@@ -61,11 +61,11 @@ job "registry2" {
 	      name            = "HTTPS check"
         type            = "http"
         protocol        = "https"
-	port            = "reg"
-	path            = "/v2/_catalog"
-	interval        = "30s"
-	timeout         = "5s"
-	method	  = "GET"
+	      port            = "reg"
+	      path            = "/v2/_catalog"
+	      interval        = "30s"
+	      timeout         = "5s"
+	      method	  = "GET"
       }
     }
 
@@ -94,18 +94,17 @@ job "registry2" {
     task "registry" {
       driver = "docker"
       config {
-	image   = "powernuke.nukelab.home:5443/registry:2.8.1-7"
+	      image   = "powernuke.nukelab.home:5443/registry:2.8.1-7"
         command = "registry"
         args    = [ "serve", "/local/registry-config.yml" ]
-	  volumes = [
-	      "/data/registry:/var/lib/registry",
-	      "/etc/pki/tls/certs/powernuke-peer-fullchain.pem:/certs/powernuke-peer-fullchain.pem",
-	      "/etc/pki/tls/private/powernuke-peer-key.pem:/private/powernuke-peer-key.pem"
-	]
+	      volumes = [
+	        "/data/registry:/var/lib/registry",
+	        "/etc/pki/tls/certs/powernuke-peer-fullchain.pem:/certs/powernuke-peer-fullchain.pem",
+	        "/etc/pki/tls/private/powernuke-peer-key.pem:/private/powernuke-peer-key.pem"
         ports = ["reg"] 
       }
       env {
-	REGISTRY_HTTP_ADDR="0.0.0.0:5443"
+	      REGISTRY_HTTP_ADDR="0.0.0.0:5443"
         REGISTRY_HTTP_TLS_CERTIFICATE = "/certs/powernuke-peer-fullchain.pem"
         REGISTRY_HTTP_TLS_KEY = "/private/powernuke-peer-key.pem"
         PORT = 5443
@@ -144,8 +143,8 @@ health:
     threshold: 3
 EOH
 
-       destination = "/local/registry-config.yml"
-       change_mode = "restart"
+      destination = "/local/registry-config.yml"
+      change_mode = "restart"
       }
       lifecycle {
         sidecar = true
