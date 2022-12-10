@@ -1,5 +1,5 @@
 # This is first approach to deploy InfluxDB into Nomad cluster
-# 6-12-2022, Nomad v.1.4.3
+# 10-12-2022, Nomad v.1.4.3
 
 job "telegraf" {
   datacenters = ["dc1"]
@@ -64,7 +64,7 @@ job "telegraf" {
     task "telegraf" {
       driver = "docker"
       config {
-        image   = "powernuke.nukelab.home:5443/telegraf:1.2.24-1"
+        image   = "powernuke.nukelab.home:5443/telegraf:1.2.24-2"
         command = "telegraf"
         args    = ["--config", "${INFLUX_CONFIG_URL}"]
         ports = ["tele1u", "tele2u", "tele3t"]
@@ -78,8 +78,8 @@ job "telegraf" {
 # Read initial Influx token and config URL from Vault
         data = <<EOF
 {{with secret "kv/data/telegraf"}}
-{{range $key, $value := .Data.data}}
-{{$key}}={{$value | toJSON}}{{end}}
+INFLUX_CONFIG_URL={{.Data.data.INFLUX_CONFIG_URL | toJSON}}
+INFLUX_TOKEN={{.Data.data.INFLUX_TOKEN | toJSON}}
 {{end}}
 EOF
         change_mode = "restart"

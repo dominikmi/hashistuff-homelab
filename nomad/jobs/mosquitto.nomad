@@ -24,14 +24,6 @@ job "mosquitto" {
         to     = 1883 
         static = 1883
       }
-      port "websockets" {
-        to     = 9001
-        static = 9001
-      }
-      port "secwebsockets" {
-        to     = 8084
-        static = 8084
-      }
       dns {
         servers = ["192.168.120.231"]
       }
@@ -68,43 +60,10 @@ job "mosquitto" {
           "/data/mosquitto/data:/mosquitto/data",
           "/data/mosquitto/logs:/mosquitto/logs"
         ]
-        ports         = ["mqtt", "websockets", "secwebsockets"]
+        ports = ["mqtt", "websockets", "secwebsockets"]
       }
       vault {
         policies = ["mosquitto-access"]
-      }
-
-## filling up the mosquitto.crt and mosquitto.key from Vault and placing them in the /local sub-folder
-
-      template {
-        data        = <<EOH
-{{ with secret "kv/data/mosquitto/nukelab" }}
-{{ .Data.data.certkey }}
-{{ end }}
-EOH
-        destination = "/local/mosquitto.key"
-        change_mode = "restart"
-        splay       = "1m"
-      }
-      template {
-        data        = <<EOH
-{{ with secret "kv/data/mosquitto/nukelab" }}
-{{ .Data.data.cert }}
-{{ end }}
-EOH
-        destination = "/local/mosquitto.crt"
-        change_mode = "restart"
-        splay       = "1m"
-      }
-      template {
-        data        = <<EOH
-{{ with secret "kv/data/mosquitto/nukelab" }}
-{{ .Data.data.ca }}
-{{ end }}
-EOH
-        destination = "/local/ca.crt"
-        change_mode = "restart"
-        splay       = "1m"
       }
 
 ## Creating password files for mqtt, websockets and securewebsockets
@@ -122,29 +81,6 @@ EOH
       }
       template {
         data        = <<EOH
-{{ with secret "kv/data/mosquitto/passwordfiles" }}
-{{ .Data.data.pwdwebsockets }}
-{{ end }}
-EOH
-        destination = "/local/pwdwebsockets.txt"
-        change_mode = "restart"
-        splay       = "1m"
-      }
-      template {
-        data        = <<EOH
-{{ with secret "kv/data/mosquitto/passwordfiles" }}
-{{ .Data.data.pwdsecwebsockets }}
-{{ end }}
-EOH
-        destination = "/local/pwdsecwebsockets.txt"
-        change_mode = "restart"
-        splay       = "1m"
-      }
-
-## Setting up static config and populating it with Vault stored values
-
-      template {
-        data = <<EOH
 per_listener_settings true
 connection_messages true
 log_timestamp true
@@ -166,22 +102,7 @@ log_dest file /mosquitto/log/mosquitto.log
 listener 1883
 allow_anonymous false
 password_file /local/pwdmqtt.txt
-
-listener 9001
-protocol websockets
-allow_anonymous false
-password_file /local/pwdwebsockets.txt
-
-listener 8084
-protocol websockets
-allow_anonymous false
-password_file /local/pwdsecwebsockets.txt
-cafile /local/ca.crt
-keyfile /local/mosquitto.key
-certfile /local/mosquitto.crt
-tls_version tlsv1.2
 EOH
-
        destination = "local/mosquitto.conf"
        change_mode = "noop"
      }
