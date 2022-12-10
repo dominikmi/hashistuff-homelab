@@ -20,7 +20,7 @@ job "grafana" {
   group "grafana" {
     count = 1
     network {
-      mode     = "bridge"
+      mode = "bridge"
       port "grafana" {
         to     = 3333
         static = 3333
