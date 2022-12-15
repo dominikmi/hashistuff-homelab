@@ -36,7 +36,8 @@ service {
         "traefik",
         "traefik.enable=true",
         "traefik.http.routers.grafana.rule=Host(`grafana.nukelab.home`)",
-        "traefik.http.routers.grafana.tls=true"
+        "traefik.http.routers.grafana.tls=true",
+        "traefik.http.services.grafana.loadbalancer.server.port=3333"
       ]
       check {
         type     = "http"
