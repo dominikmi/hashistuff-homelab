@@ -10,6 +10,7 @@ job "switch_daily" {
   }
   periodic {
     cron = "00 22,08,13,15,18,20 * * *"
+    time_zone = "Europe/Warsaw"
   }
   group "switch_daily" {
     task "switch" {
