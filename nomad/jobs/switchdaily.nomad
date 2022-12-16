@@ -16,7 +16,7 @@ job "switch_daily" {
     task "switch" {
       driver = "docker"
       config {
-        image   = "powernuke.nukelab.home:5443/switch:1.0-3"
+        image   = "powernuke.nukelab.home:5443/switch:1.1-1"
         command = "/var/empty/run.sh"
         args    = ["${DEVICES}"]
       }
@@ -29,8 +29,9 @@ job "switch_daily" {
 # Read all neccessary settings from Vault 
       data = <<EOH
 {{with secret "kv/data/heaters"}}
-TCMD={{.Data.data.cmd | toJSON}}
+USER={{.Data.data.user | toJSON}}
 DEVICES={{.Data.data.devices | toJSON}}
+PASSWORDS={{.Data.data.passwords | toJSON}}
 DOMAIN={{.Data.data.domain | toJSON}}
 {{end}}
 EOH
