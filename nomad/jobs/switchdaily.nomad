@@ -16,7 +16,7 @@ job "switch_daily" {
     task "switch" {
       driver = "docker"
       config {
-        image   = "powernuke.nukelab.home:5443/switch:1.1-1"
+        image   = "powernuke.nukelab.home:5443/switch:1.1-2"
         command = "/var/empty/run.sh"
         args    = ["${DEVICES}"]
       }
