@@ -5,6 +5,7 @@
 job "grafana" {
   datacenters = ["dc1"]
   type        = "service"
+  namespace   = "infra"
   priority    = 20
   constraint {
       attribute = "${attr.unique.hostname}"
@@ -29,7 +30,7 @@ job "grafana" {
         servers = ["192.168.120.231"]
       }
     }
-service {
+    service {
       name = "grafana-instance"
       port = "grafana"
       tags = [

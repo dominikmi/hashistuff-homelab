@@ -3,6 +3,7 @@
 job "switch_daily" {
   datacenters = ["dc1"]
   type        = "batch"
+  namespace   = "testbed"
   priority    = 20
   constraint {
     attribute = "${attr.unique.hostname}"

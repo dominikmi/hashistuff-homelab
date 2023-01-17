@@ -4,6 +4,7 @@
 job "sonarqube" {
   datacenters = ["dc1"]
   type = "service"
+  namespace = "infra"
   priority = 10
   constraint {
     attribute = "${attr.unique.hostname}"
@@ -57,7 +58,7 @@ job "sonarqube" {
       template {
         destination = "secrets/file.env"
         env = true
-# Read influxdb initial settings from Vault
+# Read postgres initial settings from Vault
         data = <<EOF
 {{with secret "kv/data/postgres"}}
 {{range $key, $value := .Data.data}}

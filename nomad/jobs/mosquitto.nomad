@@ -4,6 +4,7 @@
 job "mosquitto" {
   datacenters = ["dc1"]
   type        = "service"
+  namespace   = "IoT"
   priority    = 10  
   constraint {
       attribute = "${attr.unique.hostname}"

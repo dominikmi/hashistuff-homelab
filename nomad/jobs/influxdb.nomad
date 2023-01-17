@@ -4,6 +4,7 @@
 job "influxdb" {
   datacenters = ["dc1"]
   type        = "service"
+  namespace   = "testbed"
   priority    = 20
   constraint {
       attribute = "${attr.unique.hostname}"
@@ -18,6 +19,13 @@ job "influxdb" {
   }
   group "influxdb" {
     count = 1
+    restart {
+      attempts = 10
+      interval = "5m"
+      delay = "30s"
+      mode = "delay"
+    }
+
     network {
       mode     = "bridge"
       port "influx" {
@@ -28,6 +36,8 @@ job "influxdb" {
         servers = ["192.168.120.231"]
       }
     }
+
+# InfluxDB service definition
 
     service {
       name = "influx-instance"
@@ -45,12 +55,6 @@ job "influxdb" {
         interval = "30s"    
         timeout  = "15s"
       }
-    }
-    restart {
-      attempts = 2
-      interval = "5m"
-      delay = "15s"
-      mode = "fail"
     }
 
     task "influxdb" {
@@ -81,6 +85,6 @@ EOF
         cpu    = 300 # 500 MHz
         memory = 384 # 256MB
       }
-    }
+    } # end of influx task
   }
 }

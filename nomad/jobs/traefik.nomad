@@ -5,6 +5,7 @@
 job "traefik" {
   datacenters = ["dc1"]
   type        = "service"
+  namespace   = "infra"
   priority    = 10  
   constraint {
       attribute = "${attr.unique.hostname}"

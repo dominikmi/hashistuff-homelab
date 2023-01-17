@@ -5,6 +5,7 @@
 job "myapp" {
   datacenters = ["dc1"]
   type = "service"
+  namespace = "production"
   priority = 20
   constraint {
     attribute = "${attr.unique.hostname}"
