@@ -57,7 +57,7 @@ job "telegraf" {
         image   = "powernuke.nukelab.home:5443/telegraf:1.2.24-2"
         command = "telegraf"
         args    = ["--config", "/local/telegraf.conf"]
-#        ports = ["tele1u", "tele2u", "tele3t"]
+        ports = ["tele1u", "tele2u", "tele3t"]
       }
       vault {
         policies = ["telegraf-access"]
