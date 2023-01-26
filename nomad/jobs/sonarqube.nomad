@@ -95,7 +95,7 @@ EOF
     task "sonar" {
       driver = "docker"
       config {
-	      image   = "powernuke.nukelab.home:5443/sonarqube:9.8.0-1"
+	      image   = "powernuke.nukelab.home:5443/sonarqube:9.6.1-1"
         volumes = [
           "/data/store2/data:/opt/sonarqube/data",
           "/data/store2/extensions:/opt/sonarqube/extensions",
