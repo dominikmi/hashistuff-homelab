@@ -79,7 +79,7 @@ job "traefik" {
         network_mode  = "bridge"
         command       = "traefik"
         args          = [ "--configFile", "/local/traefik.yml" ]
-        image         = "powernuke.nukelab.home:5443/traefik:2.9.6-1"
+        image         = "powernuke.nukelab.home:5443/traefik:2.9.10-1"
         ports         = ["api", "http", "https"]
       }
       vault {
