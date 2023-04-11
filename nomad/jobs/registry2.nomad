@@ -95,7 +95,7 @@ job "registry2" {
     task "registry" {
       driver = "docker"
       config {
-	      image   = "powernuke.nukelab.home:5443/registry:2.8.1-7"
+	      image   = "powernuke.nukelab.home:5443/registry:2.8.1-8"
         command = "registry"
         args    = [ "serve", "/local/registry-config.yml" ]
 	      volumes = [
@@ -157,7 +157,7 @@ EOH
     task "registry-ui" {
       driver = "docker"
       config {
-        image = "joxit/docker-registry-ui:2.3.0"
+        image = "joxit/docker-registry-ui:2.4.1"
         ports = ["regui"]
       }
       env {

@@ -4,6 +4,7 @@
 
 job "trivy-server" {
   datacenters = ["dc1"]
+  namespace = "production"
   type = "service"
   priority = 10
   constraint {
@@ -30,7 +31,6 @@ job "trivy-server" {
 
     network {
       port "scan" { 
-        static = 8000
         to     = 8000 
       }
       dns { servers = ["192.168.120.231"] }
@@ -41,13 +41,18 @@ job "trivy-server" {
     task "trivy-scan-server" {
       driver = "docker"
       config {
-        image = "powernuke.nukelab.home:5443/trivy:0.31.3-1"
+        image = "powernuke.nukelab.home:5443/trivy:0.39.1-1"
         ports = ["scan"]
         args = ["server", "--listen", "0.0.0.0:${NOMAD_PORT_scan}"]
       }
       service {
-        name = "trivy-scan-port"
-        tags = ["global", "cache"]
+        name = "trivy"
+        tags = [
+          "traefik",
+          "traefik.enable=true",
+          "traefik.http.routers.registry.rule=Host(`trivy.nukelab.home`)",
+          "traefik.http.routers.registry.tls=true"
+        ]
         port = "scan"
         check {
           name     = "tcp_validate"    
