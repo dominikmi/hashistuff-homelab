@@ -74,7 +74,7 @@ EOF
       }
       resources {
         cpu    = 512 # 512Mhz
-        memory = 1024 # 1GB
+        memory = 768 # 768Mb
       }
     } # close task
   } # close group
