@@ -80,7 +80,7 @@ job "myapp" {
     task "mongo" {
       driver = "docker"
       config {
-	      image = "powernuke.nukelab.home:5443/mongodb:4.4.13-1"
+	      image = "powernuke.nukelab.home:5443/mongodb:4.4.19-1"
 	      volumes = [ "/data/mongodb/data:/data/db", ]
         ports = ["mongo"] 
       }
