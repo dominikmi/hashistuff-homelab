@@ -32,11 +32,11 @@ job "myapp" {
     network {
       port "app" { 
         static = 3000
-	to     = 3000 
+	      to     = 3000 
       }
       port "mongo" { 
-	static = 27017
-	to     = 27017 
+	      static = 27017
+	      to     = 27017 
       }
       dns { servers = ["192.168.100.1"] }
     }

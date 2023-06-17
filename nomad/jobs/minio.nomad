@@ -8,7 +8,7 @@ job "minio-server" {
   priority = 10
   constraint {
     attribute = "${attr.unique.hostname}"
-    value     = "powernuke"
+    value     = "srv1u100"
   }
   update {
     stagger          = "10s"
@@ -29,11 +29,13 @@ job "minio-server" {
 # define network within the group
 
     network {
-      port "api" { 
-        to = 9900
+      port "api" {
+        static = 9900 # Port to be exposed
+        to     = 9000 # port on the docker side
       }
       port "console" {
-        to = 9901
+        static = 9901 # port to be exposed
+        to     = 9001 # port on the docker side
       }
       dns { servers = ["192.168.120.231"] }
     }
@@ -86,7 +88,7 @@ job "minio-server" {
         image = "powernuke.nukelab.home:5443/minio:1.0-2"
         volumes = [ "/data/minio/data:/data", ]
         ports = ["api","console"]
-        args = ["server /data"]
+        args = ["server","/data","--console-address", ":9001"]
       }
       vault {
         policies = ["minio-access"]
@@ -101,10 +103,11 @@ job "minio-server" {
 {{$key}}={{$value | toJSON}}{{end}}
 {{end}}
 EOF
+        change_mode = "restart"
       }
       resources {
         cpu    = 400 # 400Mhz
-        memory = 256 # 256 MB
+        memory = 512 # 512 MB
       }
     } # close task
   } # close group
