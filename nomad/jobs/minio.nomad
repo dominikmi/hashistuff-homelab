@@ -8,7 +8,7 @@ job "minio-server" {
   priority = 10
   constraint {
     attribute = "${attr.unique.hostname}"
-    value     = "powernuke"
+    value     = "srv1u100"
   }
   update {
     stagger          = "10s"
@@ -30,11 +30,11 @@ job "minio-server" {
 
     network {
       port "api" {
-        static = 9900 # Port to be exposed
+#        static = 9900 # Port to be exposed
         to     = 9000 # port on the docker side
       }
       port "console" {
-        static = 9901 # port to be exposed
+#        static = 9901 # port to be exposed
         to     = 9001 # port on the docker side
       }
       dns { servers = ["192.168.120.231"] }

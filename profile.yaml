@@ -1,0 +1,13 @@
+version: 1.0
+specs:
+- type: "Private"
+- owner: "Dominik Miklaszewski"
+- team: "DevOps"
+- purpose: |
+    platform definition & jobs
+- deployment: "Nomad"
+security:
+  secrets: True
+  sca: False
+  sast: False
+  container: False
